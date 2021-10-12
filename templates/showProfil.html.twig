@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ participant.pseudo }}</h1>
+    <img src="{{ asset('img/'~participant.imgProfil) }}" alt="{{ participant.imgProfil }}">
+    <div>Prenom : {{ participant.prenom }}</div>
+    <div>Nom : {{ participant.nom }}</div>
+    <div>Téléphone : {{ participant.telephone }}</div>
+    <div>Email : {{ participant.email }}</div>
+    <div>Campus : {{ participant.campus.nom }}</div>
+    <a href=""><button>Retour</button></a>
+{% endblock %}
+
+{% block title %}
+ {{ parent() }} | Profil de {{ participant.pseudo }}
+{% endblock %}
+

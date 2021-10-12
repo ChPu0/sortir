@@ -9,10 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity("email", message="L'email existe déjà")
+ * @UniqueEntity("pseudo", message="Le pseudo existe déjà")
  */
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -24,7 +26,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(name="email", type="string", length=180, unique=true)
+     * @Assert\Email(message="L'email saisi n'est pas valide")
      */
     private $email;
 
@@ -36,6 +39,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\Length(min=6, minMessage="Le mot de passe doit contenir au moins 6 caractères")
      */
     private $password;
 
@@ -51,6 +55,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
+     * @Assert\Regex("/^0[1-2-3-4-5-6-7][0-9]{8}$/", message="Ce n'est pas un numéro de téléphone valide !")
      */
     private $telephone;
 
@@ -75,9 +80,14 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private $campus;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(name="pseudo", type="string", length=100)
      */
     private $pseudo;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $imageProfil;
 
 
     public function __construct()
@@ -284,5 +294,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-//
+
+    public function getImgProfil()
+    {
+        return $this->imageProfil;
+    }
+
+    public function setImgProfil($imageProfil)
+    {
+        $this->imageProfil = $imageProfil;
+
+        return $this;
+    }
+
 }
