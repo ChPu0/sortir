@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Repository\ParticipantRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,10 +24,12 @@ class ParticipantAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login';
 
     private UrlGeneratorInterface $urlGenerator;
+    private $participantRepository;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(UrlGeneratorInterface $urlGenerator, ParticipantRepository $repository)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->participantRepository = $repository;
     }
 
     public function authenticate(Request $request): PassportInterface
@@ -46,6 +49,10 @@ class ParticipantAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        //On récupère l'utilisateur et on stocke son id en session
+        $user = $this->participantRepository->findOneBy(['email' => $request->getSession()->get(Security::LAST_USERNAME)]);
+        $request->getSession()->set('user', $user);
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
