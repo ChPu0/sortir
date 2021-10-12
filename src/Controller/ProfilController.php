@@ -90,7 +90,7 @@ class ProfilController extends AbstractController
 
                 return $this->redirectToRoute('profil_show', ["id" => $participant->getId()]);
             }
-        return $this->render('createProfil.html.twig', ["profilForm" => $profilForm->createView()]);
+        return $this->render('profil/createProfil.html.twig', ["profilForm" => $profilForm->createView()]);
     }
 
 
@@ -108,7 +108,7 @@ class ProfilController extends AbstractController
         if(!$participant) {
             throw $this->createNotFoundException('Participant inexistant');
         }
-        return $this->render('showProfil.html.twig', ["participant" => $participant]);
+        return $this->render('profil/showProfil.html.twig', ["participant" => $participant]);
     }
 
 
@@ -170,7 +170,7 @@ class ProfilController extends AbstractController
         return $this->redirectToRoute('profil_show', ["id" => $participant->getId()]);
     }
 
-        return $this->render('createProfil.html.twig', ["profilForm" => $profilForm->createView()]);
+        return $this->render('profil/createProfil.html.twig', ["profilForm" => $profilForm->createView()]);
     }
 
 }
