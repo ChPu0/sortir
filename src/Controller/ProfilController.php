@@ -60,7 +60,7 @@ class ProfilController extends AbstractController
                 //Hash du mot de passe
                 $pass =  $profilForm->get('password')->getData();
                 $participant->setPassword($this->passwordHasher->hashPassword($participant, $pass));
-                //Definition des rôles
+                //Definition des roles
                 if($participant->getAdministrateur() === true) {
                     $participant->setRoles(["ROLE_ADMIN"]);
                 }
@@ -207,12 +207,11 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('profil_show', ["id" => $connectedUserId]);
         }
         else {
+            //todo prevoir une page d'erreur
             $this->addFlash('error', "Cette activité n'existe pas");
-            return $this->redirectToRoute('profil_show', ["id" => $connectedUserId]);
+            return $this->render('test/index.html.twig');
 
         }
-
-
 
     }
 
