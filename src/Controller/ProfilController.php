@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\ProfilType;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -45,10 +46,10 @@ class ProfilController extends AbstractController
         //Formulaire de saisie d'un profil User
             $participant = new Participant();
 
-            //Definition des infos par défaut todo
+            //todo Definition des infos par défaut
             $participant->setRoles(["ROLE_USER"]);
-            $participant->setActif(true);
-            $participant->setAdministrateur(false);
+            //$participant->setActif(true);
+            //$participant->setAdministrateur(false);
             $participant->setImgProfil('avatar.png');
 
             $profilForm = $this->createForm(ProfilType::class, $participant);
@@ -59,6 +60,13 @@ class ProfilController extends AbstractController
                 //Hash du mot de passe
                 $pass =  $profilForm->get('password')->getData();
                 $participant->setPassword($this->passwordHasher->hashPassword($participant, $pass));
+                //Definition des rôles
+                if($participant->getAdministrateur() === true) {
+                    $participant->setRoles(["ROLE_ADMIN"]);
+                }
+                else{
+                    $participant->setRoles(["ROLE_USER"]);
+                }
                 //Upload image profil
                 $imgProfil = $profilForm->get('image')->getData();
                 if ($imgProfil) {
@@ -171,6 +179,41 @@ class ProfilController extends AbstractController
     }
 
         return $this->render('profil/createProfil.html.twig', ["profilForm" => $profilForm->createView()]);
+    }
+
+
+    //todo a adapter au formulaire d'Anaïs
+    /**
+     * @Route("/desinscription/{id}", name="profil_desinscription")
+     */
+    //------------------------------------
+    //Retirer un utilisateur d'une sortie
+    //-----------------------------------
+    public function desinscription(int $id, EntityManagerInterface $entityManager,SortieRepository $sortieRepository, ParticipantRepository $participantRepository) {
+        $connectedUser = $this->getUser();
+        $connectedUserId = $connectedUser->getId();
+
+        $selectedUser = $participantRepository->find($connectedUserId);
+        $selectedSortie = $sortieRepository->find($id);
+
+        if($selectedSortie != null) {
+
+            $selectedUser->getSorties()->removeElement($selectedSortie);
+            $selectedSortie->getInscrits()->removeElement($selectedUser);
+
+            $entityManager->flush();
+
+            $this->addFlash('succes', "Vous vous etes désinscrit !");
+            return $this->redirectToRoute('profil_show', ["id" => $connectedUserId]);
+        }
+        else {
+            $this->addFlash('error', "Cette activité n'existe pas");
+            return $this->redirectToRoute('profil_show', ["id" => $connectedUserId]);
+
+        }
+
+
+
     }
 
 }
