@@ -21,39 +21,39 @@ class ProfilType extends AbstractType
     {
         $builder
             ->add('pseudo',TextType::class,[
-                "label"=>"Pseudo : ",
-                "required"=>"true"
+                'label'=>'Pseudo : ',
+                'required'=>'true'
             ])
             ->add('prenom',TextType::class,[
-                "label"=>"Prénom : ",
-                "required"=>"true"
+                'label'=>'Prénom : ',
+                'required'=>'true'
             ])
             ->add('nom',TextType::class,[
-                "label"=>"Nom : ",
-                "required"=>"true"
+                'label'=>'Nom : ',
+                'required'=>'true'
             ])
             ->add('telephone',TextType::class,[
-                "label"=>"Téléphone : "
+                'label'=>'Téléphone : '
             ])
             ->add('email',EmailType::class,[
-                "label"=>"Email : ",
-                "required"=>"true"
+                'label'=>'Email : ',
+                'required'=>'true'
             ])
             //->add('roles')
             ->add('password',RepeatedType::class,[
-                "type" => PasswordType::class,
-                "mapped" => false,
-                "first_options" => ["label"=>"Mot de passe : "],
-                "second_options" => ["label"=>"Confirmation :"],
-                "invalid_message" => 'Les mots de passe doivent être identiques',
-                "required"=>"true"
+                'type' => PasswordType::class,
+                'mapped' => false,
+                'first_options' => ['label'=>'Mot de passe : '],
+                'second_options' => ['label'=>'Confirmation :'],
+                'invalid_message' => 'Les mots de passe doivent être identiques',
+                'required'=>'true'
             ])
-            //->add('administrateur')
-            //->add('actif')
+            ->add('administrateur')
+            ->add('actif')
             //->add('sorties')
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                "label"=>"Campus : ",
+                'label'=>'Campus : ',
                 'choice_label' => 'nom',
                 'placeholder' => '-- Choisir --',
             ])
