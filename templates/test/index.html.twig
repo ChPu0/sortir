@@ -9,13 +9,26 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Hello ! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'D:/Logiciels/wamp64/www/Sortir.com/src/Controller/TestController.php'|file_link(0) }}">src/Controller/TestController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'D:/Logiciels/wamp64/www/Sortir.com/templates/test/index.html.twig'|file_link(0) }}">templates/test/index.html.twig</a></code></li>
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Nombre de participants</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.inscrits|length }}</td>
+                    <td><a href="{{ path("sortie_add_participant", {'id' : sortie.id}) }}" title="Ajouter un participant à la sortie">Ajouter un participant</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <a href="{{ path('app_logout') }}" title="Déconnexion">Déconnexion</a>
 
