@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hello ! ✅</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Nombre de participants</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.inscrits|length }}</td>
+                    <td><a href="{{ path("sortie_add_participant", {'id' : sortie.id}) }}" title="Ajouter un participant à la sortie">Ajouter un participant</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_logout') }}" title="Déconnexion">Déconnexion</a>
+
+</div>
+{% endblock %}

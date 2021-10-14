@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Profil</h1>
+    {{ form_start(profilForm) }}
+    {{ form_widget(profilForm) }}
+    <button>Valider</button>
+    {{ form_end(profilForm) }}
+    <a href="#"><button>Annuler</button></a>
+{% endblock %}
+
+{% block title %}
+Profil | {{ parent() }}
+{% endblock %}
+

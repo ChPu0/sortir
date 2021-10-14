@@ -79,6 +79,11 @@ class Sortie
      */
     private $organisateur;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $motifAnnulation;
+
     public function __construct()
     {
         $this->inscrits = new ArrayCollection();
@@ -231,6 +236,18 @@ class Sortie
     public function setOrganisateur(?Participant $organisateur): self
     {
         $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): self
+    {
+        $this->motifAnnulation = $motifAnnulation;
 
         return $this;
     }
