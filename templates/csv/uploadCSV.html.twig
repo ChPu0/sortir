@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un fichier CSV{% endblock %}
+
+{% block body %}
+    <h1>Ajouter votre fichier CSV</h1>
+
+    <form method="POST" action="{{ path('profil_csv') }}" enctype="multipart/form-data">
+        <div>
+            <label>Csv File</label>
+            <input type="file" name="csvFile">
+        </div>
+
+        <button type="submit">Upload</button>
+    </form>
+{% endblock %}

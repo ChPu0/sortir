@@ -49,10 +49,6 @@ class ParticipantAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        //On récupère l'utilisateur et on stocke son id en session
-        $user = $this->participantRepository->findOneBy(['email' => $request->getSession()->get(Security::LAST_USERNAME)]);
-        $request->getSession()->set('user', $user);
-
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
