@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table>
+        <tr>
+            <th>Pseudo</th>
+            <th>Nom</th>
+            <th>Prenom</th>
+            <th>Campus</th>
+            <th>Profil</th>
+            <th>Actif</th>
+            <th>Supprimer</th>
+        </tr>
+        <tr>
+            {% for membre in membres %}
+                <tr>
+                    <td>{{ membre.pseudo }}</td>
+                    <td>{{ membre.nom | upper }}</td>
+                    <td>{{ membre.prenom | capitalize }}</td>
+                    <td>{{ membre.campus.nom | upper }}</td>
+                    <td><a href="{{ path('profil_amend',{'id':membre.id}) }}">Modifier</a></td>
+                    {% if membre.actif == true%}
+                    <td><a href="{{ path('user_desactiver',{'id':membre.id}) }}">Désactiver</a></td>
+                    {% else %}
+                     <td><a href="{{ path('user_reactiver',{'id':membre.id}) }}">Réactiver</a></td>
+                    {% endif %}
+
+                    <td><a href="{{ path('user_supprimer',{'id':membre.id}) }}">Supprimer</a></td>
+                 </tr>
+            {% endfor %}
+        </tr>
+    </table>
+
+{% endblock %}
+
+{% block title %}
+    {{ parent() }} | Utilisateurs
+{% endblock %}
+

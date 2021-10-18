@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Ajouter un lieu</h1>
+    {{ form_start(lieuForm) }}
+    {{ form_label(lieuForm) }}
+    {{ form_widget(lieuForm) }}
+    <button>Valider</button>
+    {{ form_end(lieuForm) }}
+    {# todo retour à la page d'accueil #}
+    <a href="#"><button>Annuler</button></a>
+{% endblock %}
+
+{% block title %}
+    {{ parent() }} | Ajouter un lieu
+{% endblock %}
+
+
+
