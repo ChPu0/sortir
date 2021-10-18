@@ -40,16 +40,12 @@ class ProfilController extends AbstractController
     public function create(
         EntityManagerInterface $entityManager,
         Request $request,
-        UserPasswordHasherInterface $passwordHasher,
         SluggerInterface $slugger) {
 
         //Formulaire de saisie d'un profil User
             $participant = new Participant();
 
             //todo Definition des infos par défaut
-            $participant->setRoles(["ROLE_USER"]);
-            //$participant->setActif(true);
-            //$participant->setAdministrateur(false);
             $participant->setImgProfil('avatar.png');
 
             $profilForm = $this->createForm(ProfilType::class, $participant);
@@ -88,9 +84,6 @@ class ProfilController extends AbstractController
                     $participant->setImgProfil($newFilename);
                 }
 
-
-
-
                 $entityManager->persist($participant);
                 $entityManager->flush();
 
@@ -114,7 +107,8 @@ class ProfilController extends AbstractController
 
         $participant = $participantRepository->find($id);
         if(!$participant) {
-            throw $this->createNotFoundException('Participant inexistant');
+            $this->addFlash('error', "Ce membre n'existe pas");
+            return $this->render('error/error.html.twig');
         }
         return $this->render('profil/showProfil.html.twig', ["participant" => $participant]);
     }
@@ -175,6 +169,7 @@ class ProfilController extends AbstractController
 
         $this->addFlash('succes', "Profil mis à jour !");
 
+        //todo modifier la page de redirection à la validation du formulaire
         return $this->redirectToRoute('profil_show', ["id" => $participant->getId()]);
     }
 
@@ -204,13 +199,13 @@ class ProfilController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('succes', "Vous vous etes désinscrit !");
+
+            //todo modifier la page de redirection à la validation du formulaire
             return $this->redirectToRoute('profil_show', ["id" => $connectedUserId]);
         }
         else {
-            //todo prevoir une page d'erreur
             $this->addFlash('error', "Cette activité n'existe pas");
-            return $this->render('test/index.html.twig');
-
+            return $this->render('error/error.index.html.twig');
         }
 
     }
