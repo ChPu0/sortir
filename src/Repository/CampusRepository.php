@@ -19,6 +19,18 @@ class CampusRepository extends ServiceEntityRepository
         parent::__construct($registry, Campus::class);
     }
 
+    public function findAllLibelle() {
+        $entityManager = $this->getEntityManager();
+        $dql = "
+                SELECT nom 
+                FROM App\Entity\Campus c 
+                ";
+
+        $query = $entityManager->createQuery($dql);
+
+        return $query->getResult();
+    }
+
     // /**
     //  * @return Campus[] Returns an array of Campus objects
     //  */

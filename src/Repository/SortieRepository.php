@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Campus;
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Types\DateTimeType;
@@ -25,12 +26,13 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findByCampus(Campus $campus)
+    public function findByCampus()
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere('s.campus = ' . $campus);
-        $query = $queryBuilder->getQuery();
+        $queryBuilder->innerJoin('s.campus', 'sc')
+                    ->andWhere('sc.id = 1');
 
+        $query = $queryBuilder->getQuery();
         $query->setMaxResults(30);
         $paginator = new Paginator($query);
         return $paginator;
@@ -69,14 +71,14 @@ class SortieRepository extends ServiceEntityRepository
         return $paginator;
     }
 
-    public function findByIsInscrit()
+    public function findByIsInscrit($id)
     {
         $queryBuilder = $this->createQueryBuilder('s');
         $queryBuilder//->select('s')
                         //->from('sortie', 's')
                         ->innerJoin('s.inscrits', 'sp')
                         //->innerJoin('participant', 'p', 'ON', 'p.id = sp.participant_id')
-                        ->andWhere('sp.id = 1');
+                        ->andWhere('sp.id = ' . $id);
 
         //Table relationnelle sortie_participant :
         /*$entityManager = $this->getEntityManager();
@@ -115,13 +117,48 @@ class SortieRepository extends ServiceEntityRepository
     public function findByEtatMaxOneMonth($etat)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere('s.etat = ' . $etat);
-        $queryBuilder->andWhere('s.date_part("day",age(date_heure_debut, NOW()) <= 30 ');
+        $queryBuilder->andWhere('s.etat = ' . $etat)
+                        ->andWhere('s.date_part("day",age(date_heure_debut, NOW()) <= 30 ');
         $query = $queryBuilder->getQuery();
 
         $query->setMaxResults(30);
         $paginator = new Paginator($query);
         return $paginator;
+    }
+
+    public function findByCriteres($criteres)  {
+
+
+       $queryBuilder = $this->createQueryBuilder('s')
+                                ->innerJoin('s.campus', 'sc')
+                                ->andWhere('sc.nom = ' . $criteres['campus'])
+                                ->andWhere('s.nom LIKE %' . $criteres['nom'] . '%')
+                                ->andWhere('s.organisateur = ' . $criteres['organisateur'])
+                                ->andWhere('s.date_heure_debut > ' . $criteres['date_min'] . 'AND s.date_heure_debut < ' . $criteres['date_max'])
+                                ->innerJoin('s.inscrits', 'sp')
+                                ->innerJoin('participant', 'p', 'ON', 'p.id = sp.participant_id')
+                                ->andWhere('sp.id = ' . $criteres['id_user'])
+                                ->andWhere('s.etat = ' . $criteres['etat'])
+                                ->andWhere('s.date_part("day",age(date_heure_debut, NOW()) <= 30 ');
+       $query = $queryBuilder->getQuery();
+
+        //En DQL :
+        /*$entityManager = $this->getEntityManager();
+        $dql = "
+                SELECT s 
+                FROM App\Entity\Sortie s 
+                WHERE s.nom LIKE % ". $criteres['nom'] . "%" .
+                "AND s.organisateur = ". $criteres['organisateur'] .
+                "AND s.date_heure_debut > " . date('YYYY-mm-dd', $criteres['date_heure_debut']) . "AND s.date_heure_debut < " . date('YYYY-mm-dd', $criteres['date_heure_fin']) .
+                "INNER JOIN 's.campus', 'sc'
+                WHERE 'sc.id' = " . $criteres['campus']->getNom() .
+             "AND WHERE 's.etat = " . $criteres['etat'] .
+                "AND WHERE 's.date_part('day',age(date_heure_debut, NOW()) <= 30 '
+                ";
+
+        $query = $entityManager->createQuery($dql);*/
+
+        return new Paginator($query);
     }
 
     // /**

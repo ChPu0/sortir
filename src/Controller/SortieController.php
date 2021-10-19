@@ -2,13 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Sortie;
+use App\Form\ListSortieType;
 use App\Form\SelectSortieType;
 use App\Form\TargetSortieType;
 use App\Repository\SortieRepository;
+use ContainerQM4dqw5\getCampusRepositoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -33,20 +37,42 @@ class SortieController extends AbstractController
      * @param SortieRepository $sortieRepository
      * @return Response
      */
-    public function findSorties(EntityManagerInterface $entityManager, SortieRepository $sortieRepository): Response
+    public function findSorties(SortieRepository $sortieRepository,
+                                Request $request) : Response
     {
-        $sorties = $sortieRepository->findAll();
+
+        //$sortiesInscrits = $sortieRepository->findByIsInscrit(1);
+        $user = $this->getUser();
+
+        //$sorties = $sortieRepository->findAll();
 
 
-        $selectSortieForm = $this->createForm(SelectSortieType::class);
+        $listSortieType = $this->createForm(ListSortieType::class);
 
-        $sortiesInscrits = $sortieRepository->findByIsInscrit();
+        $listSortieType->handleRequest($request);
+
+
+        if($listSortieType->isSubmitted()) {
+
+            //array_push($criteres, $this->getUser()->getUserIdentifier());
+            //dd($criteres);
+            $criteres  = $listSortieType->getData();
+            $criteresLieu  = $listSortieType['campus']->getData();
+
+            $sorties = $sortieRepository->findBy($criteres);
+        } else {
+            $sorties = $sortieRepository->findAll();
+        }
+
+
+        dump($request);
 
 
         return $this->render('sortie/listeSorties.html.twig', [
-            "sorties" => $sorties,
-            "sortiesInscrits" => $sortiesInscrits,
-            'selectSortieForm' => $selectSortieForm->createView()
+            'sorties' => $sorties,
+            //'sortiesInscrits' => $sortiesInscrits,
+            'user' => $user,
+            'listSortieType' => $listSortieType->createView()
         ]);
     }
 }

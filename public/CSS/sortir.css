@@ -1,6 +1,10 @@
 body {
-    width: 90vw;
+    width: 100vw;
     padding: 5vw;
+    margin: auto;
+}
+
+section {
     margin: auto;
 }
 
@@ -13,14 +17,14 @@ section.date-user {
 
 div.liste-container {
     border: 2px solid black;
-    margin: 20vh auto 2vh auto;
+    margin: 10vh auto 2vh auto;
     overflow-scrolling: auto;
     max-height: 95vh;
 }
 
 table.table-liste-sorties {
     /*margin: 20vh auto 2vh auto;*/
-    overflow-scrolling: auto;
+    overflow: scroll;
     max-height: 95vh;
 }
 
