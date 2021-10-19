@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table>
+        <tr>
+            <th>Pseudo</th>
+            <th>Nom</th>
+            <th>Prenom</th>
+            <th>Campus</th>
+            <th>Profil</th>
+            <th>Actif</th>
+            <th>Supprimer</th>
+        </tr>
+
+        {% for membre in membres %}
+
+            <tr>
+                <td>{{ membre.pseudo }}</td>
+                <td>{{ membre.nom | upper }}</td>
+                <td>{{ membre.prenom | capitalize }}</td>
+                <td>{{ membre.campus.nom | upper }}</td>
+                {% set id = membre.id %}
+                <td><a href="{{ path('profil_amend',{'id':membre.id}) }}"><input type="button" value="Modifier" class="btn btn-primary"></a></td>
+                {% if membre.actif == true%}
+                    <td><a href="{{ path('user_desactiver',{'id':membre.id}) }}"><input type="button" value="Désactiver" class="btn btn-warning"></a></td>
+                {% else %}
+                     <td><a href="{{ path('user_reactiver',{'id':membre.id}) }}"><input type="button" value="Réactiver" class="btn btn-info"></a></td>
+                {% endif %}
+
+                <td>
+                    <a href="{{ path('user_supprimer',{'id':membre.id}) }}"><input type="button" value="Supprimer" class="btn btn-danger"></a>
+
+{# -- UTILISATION D'UNE MODALE -- NE FONCTIONNE PAS
+                    <input type="button" class="btn btn-primary" value="Supprimer" onclick="displayHide()">
+                    <!-- Modal -->
+                    <div class="maMod" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Suppresion Membre</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="displayHide()">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Souhaitez vous vraiment supprimer cet utilisateur ?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="displayHide()">Annuler</button>
+                                    <a href="{{ path('user_supprimer',{'id':membre.id}) }}"><input type="button" value="Supprimer" class="btn btn-danger"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+#}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+
+
+{% endblock %}
+
+{% block title %}
+    {{ parent() }} | Utilisateurs
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function displayHide() {
+            var modal = document.getElementById("exampleModalCenter");
+            if(modal.style.display === 'none') {
+                modal.style.display = 'block';
+            }
+            else {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+{% endblock %}
+
