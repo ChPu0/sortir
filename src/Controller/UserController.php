@@ -43,7 +43,7 @@ class UserController extends AbstractController
         $this->addFlash('succes', "Membre désactivé !");
 
         //todo modifier la page de redirection à la validation du formulaire
-        return $this->redirectToRoute('profil_show', ["id" => $participant->getId()]);
+        return $this->redirectToRoute('user_affichage', ["id" => $participant->getId()]);
     }
 
     /**
@@ -63,7 +63,7 @@ class UserController extends AbstractController
         $this->addFlash('succes', "Membre réactivé !");
 
         //todo modifier la page de redirection à la validation du formulaire
-        return $this->redirectToRoute('profil_show', ["id" => $participant->getId()]);
+        return $this->redirectToRoute('user_affichage', ["id" => $participant->getId()]);
     }
 
     /**
@@ -86,10 +86,4 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user_affichage', ["id" => $participant->getId()]);
     }
 
-    /**
-     * @Route("/user/modal", name="user_modalValidation")
-     */
-    public function modalValidation() {
-        return $this->render('user/popup.html.twig');
-    }
 }
