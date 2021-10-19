@@ -173,7 +173,7 @@ class ProfilController extends AbstractController
         return $this->redirectToRoute('profil_show', ["id" => $participant->getId()]);
     }
 
-        return $this->render('profil/createProfil.html.twig', ["profilForm" => $profilForm->createView()]);
+        return $this->render('profil/createProfil.html.twig', ["profilForm" => $profilForm->createView(), "img" =>$participant->getImgProfil()]);
     }
 
 
