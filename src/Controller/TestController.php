@@ -48,7 +48,7 @@ class TestController extends AbstractController
         } else if($today >= $sortie->getDateLimiteInscription()) {
             $this->addFlash('error', "Impossible de s'inscrire, la date d'inscription est dépassée");
             return $this->redirectToRoute(
-                'test'
+                'test_index'
             #TODO=Route à définir
             );
         }

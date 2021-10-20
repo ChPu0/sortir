@@ -233,7 +233,7 @@ class SortieController extends AbstractController
     }
 
 
-
+    /**
      * @Route("/liste", name="liste")
      * @param EntityManagerInterface $entityManager
      * @param SortieRepository $sortieRepository
@@ -279,10 +279,22 @@ class SortieController extends AbstractController
 
             if ($criteresDateMin instanceof \DateTime) {
                 $criteresDateMin = $criteresDateMin->format('Y-m-d');
+            } else {
+                $criteresDateMin = \DateTime::createFromFormat('Y-m-d', '1800-01-01');
+                $criteresDateMin = $criteresDateMin->format('Y-m-d');
             }
 
             if ($criteresDateMax instanceof \DateTime) {
                 $criteresDateMax = $criteresDateMax->format('Y-m-d');
+            } else {
+                $criteresDateMax = \DateTime::createFromFormat('Y-m-d', '2999-12-31');
+                $criteresDateMax = $criteresDateMax->format('Y-m-d');
+            }
+
+            if($criteresDateMax < $criteresDateMin){
+                $this->addFlash('error', "La date maximum doit être supérieure à la date minimum.");
+
+                $this->redirectToRoute('sortie_liste');
             }
 
             if($criteresEtat == true) {
@@ -301,7 +313,11 @@ class SortieController extends AbstractController
                 'isNotInscrit' => $criteresIsNotInscrit
             ];
 
+
+
+
             $sorties = $sortieRepository->findByCriteres($criteres);
+            //dd($sorties);
 
         } else {
 

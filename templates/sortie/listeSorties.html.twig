@@ -11,11 +11,6 @@
             Date du jour : {{ "now" | date('d/m/Y') }}
             <br/>
             Participant : {{ userName }}
-            {{ user.id }}
-            <br />
-            {{ criteres | join(',') }}
-            <br />
-            {{ sorties | length }}
         </div>
     </section>
 
@@ -62,7 +57,7 @@
 
                 <div class="form-group">
                     {{ form_widget(listSortieType.isNotInscrit) }}
-                    <label for="isInscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
+                    <label for="isNotInscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
                 </div>
 
                 <div class="form-group">
@@ -97,7 +92,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% if sorties | length > 0 %}
                 {% for sortie in sorties %}
                     <tr>
                         <th scope="row">{{ sortie.nom }}</th>
@@ -108,7 +102,9 @@
                         <td>{{ sortie.dateLimiteInscription | date('d/m/Y', 'Europe/Paris') }}</td>
                         <td>{{ sortie.inscrits | length }} / {{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
-                        <td>inscrit ? X</td>
+                        <td>{% if(sortie.getInscrits.contains(user)) %}
+                                <p>X</p>
+                        {% endif %}</td>
                         <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
                         <td>Actions : Conditions</td>
 
@@ -117,34 +113,6 @@
                     {% else %}
                         <p>Pas de sorties enregistrées pour le moment</p>
                 {% endfor %}
-                {% else %}
-                {% for sortieDefault in sortiesDefaultList %}
-                    <tr>
-                        <th scope="row">{{ sortieDefault.nom }}</th>
-                        <td>
-
-                            {{ sortieDefault.getDateHeureDebut | date('d/m/Y') }}
-                        </td>
-                        <td>{{ sortieDefault.dateLimiteInscription | date('d/m/Y', 'Europe/Paris') }}</td>
-                        <td>{{ sortieDefault.inscrits | length }} / {{ sortieDefault.nbInscriptionsMax }}</td>
-                        <td>{{ sortieDefault.etat.libelle }}</td>
-                        <td>inscrit ? X</td>
-                        <td>{{ sortieDefault.organisateur.nom }} {{ sortieDefault.organisateur.prenom }}</td>
-                        <td>
-                            {% if ((sortie.etat == 'En cours')) and (criteres['isInscrit']) %}
-                                <a href="#">Afficher</a>
-
-                            {% elseif ((sortie.etat == 'En création') and (criteres['organisateur'])) %}
-                                <a href="#">Modifier</a> <a>Publier</a>
-                            {% endif %}
-                        </td>
-
-                    </tr>
-
-                {% else %}
-                    <p>Pas de sorties enregistrées pour le moment</p>
-                {% endfor %}
-                {% endif %}
                 </tbody>
             </table>
         </div>

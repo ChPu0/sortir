@@ -46,7 +46,7 @@ class ListSortieType extends AbstractType
                 ]
             ])
             ->add('dateHeureMin', DateType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => 'Entre : ',
                 'widget' => 'single_text',
                 'attr' => [
@@ -54,7 +54,7 @@ class ListSortieType extends AbstractType
                 ]
             ])
             ->add('dateHeureMax', DateType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => 'Et : ',
                 'widget' => 'single_text',
                 'attr' => [
