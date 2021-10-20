@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Campus;
+use App\Entity\Etat;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -70,12 +71,14 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findByIsInscrit($criteres)
     {
+
         $queryBuilder = $this->createQueryBuilder('s');
         $queryBuilder//->select('s')
                         //->from('sortie', 's')
                         ->innerJoin('s.inscrits', 'sp')
                         //->innerJoin('participant', 'p', 'ON', 'p.id = sp.participant_id')
                         ->andWhere('sp.id = ' . $criteres['user_id']);
+
 
         //Table relationnelle sortie_participant :
         /*$entityManager = $this->getEntityManager();
@@ -88,7 +91,9 @@ class SortieRepository extends ServiceEntityRepository
 
         $query = $entityManager->createQuery($dql);*/
 
+
         $query = $queryBuilder->getQuery();
+
 
         $paginator = new Paginator($query);
         return $paginator;
@@ -108,52 +113,71 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findByCriteres($criteres)  {
 
-       /*$queryBuilder = $this->createQueryBuilder('s');
-       $queryBuilder->where('s.campus = ' . $criteres['campus'])
-                       ->andWhere('s.nom LIKE %' . $criteres['nom'] . '%')
-                       ->andWhere('s.date_heure_debut > ' . $criteres['date_min'] . ' AND s.date_heure_debut < ' . $criteres['date_max'])
-                       ->andWhere('date_heure_debut < NOW() AND DATEDIFF(NOW(), date_heure_debut) <= 30')
-                       ->andWhere('s.organisateur = ' . $criteres['organisateur'])
-                       ->andWhere('s.etat = ' . $criteres['etat']);
-
-                       //->innerJoin('sortie_participant', 'sp', 'ON sp.participant_id = ' . $criteres['user_id']);
-       $query = $queryBuilder->getQuery();*/
+        $em = $this->getEntityManager();
+        $campusRepository = $em->getRepository(Campus::class);
+        $etatRepository = $em->getRepository(Etat::class);
+        $participantRepository = $em->getRepository(Participant::class);
 
         $count = 1;
         $criteres['nom'] = str_replace("'", "", $criteres['nom']) ;
 
-        //En DQL :
-        $entityManager = $this->getEntityManager();
-        $rsm = new ResultSetMapping();
+        $queryBuilder = $this->createQueryBuilder('s');
+        $queryBuilder->innerJoin('s.inscrits', 'sp');
+        if(!$criteres['isInscrit'] || !$criteres['isNotInscrit']) {
+            if ($criteres['isInscrit']) {
+                $queryBuilder->
+                andWhere('sp.id = ?1');
+            }
+            if ($criteres['isNotInscrit']) {
+                $queryBuilder->
+                andWhere('sp.id != ?2');
+            }
+        }
+        $queryBuilder->andWhere('s.campus = ?7');
+        if(!$criteres['organisateur']) {
+                $queryBuilder->
+                    andWhere('s.organisateur != ?2');
+        } else if(!$criteres['isInscrit'] && !$criteres['isNotInscrit']) {
+            $queryBuilder->andWhere('s.organisateur = ?2');
+        }
 
-        $dql = "SELECT * FROM sortie s 
-                WHERE s.campus_id = ?
-                AND s.nom LIKE '%'?'%'
-                AND s.organisateur_id = ?
-                AND s.date_heure_debut >= ?
-                AND s.date_heure_debut <= ?
-                AND s.etat_id = ?
-                AND s.date_heure_debut < NOW() AND DATEDIFF(NOW(), s.date_heure_debut) <= 30
-                INNER JOIN sortie_participant as sp 
-                ON sp.sortie_id = s.id 
-                AND sp.participant_id = ?  
-                INNER JOIN participant as p 
-                ON p.id = sp.participant_id
-                ";
+        $queryBuilder->andWhere('s.nom LIKE ?3');
 
+        $queryBuilder->andWhere('s.dateHeureDebut >= ?4')
+        ->andWhere('s.dateHeureDebut <= ?5');
+        if($criteres['etat_id'] === 5) {
+            $queryBuilder->
+            andWhere('s.etat = ?6')
+            ->andWhere('s.dateHeureDebut < ?8');
+        } else {
+            $queryBuilder->
+            andWhere('s.etat != ?6');
+        }
 
+        $queryBuilder->setParameter(7, $campusRepository->find($criteres['campus_id']));
+        $queryBuilder->setParameter(3, '%'.$criteres['nom'].'%');
+        if(!$criteres['isInscrit'] || !$criteres['isNotInscrit']) {
+            if ($criteres['isInscrit']) {
+                $queryBuilder->setParameter(1, $participantRepository->find($criteres['user_id']));
+            }
+            if ($criteres['isNotInscrit']) {
+                $queryBuilder->setParameter(2, $participantRepository->find($criteres['user_id']));
+            }
+        }
 
-
-        $query = $entityManager->createNativeQuery($dql, $rsm);
-
-        $query->setParameter(1, $criteres['campus_id']);
-        $query->setParameter(2, $criteres['nom']);
-        $query->setParameter(3, $criteres['user_id']);
-        $query->setParameter(4, $criteres['date_min']);
-        $query->setParameter(5, $criteres['date_max']);
-        $query->setParameter(6, $criteres['etat_id']);
-        $query->setParameter(7, $criteres['user_id']);
-
+        $queryBuilder->setParameter(4, $criteres['date_min']);
+        $queryBuilder->setParameter(5, $criteres['date_max']);
+        $queryBuilder->setParameter(6, $etatRepository->find(5));
+        if($criteres['etat_id'] === 5) {
+            $queryBuilder->setParameter(8, new \DateTime('now'));
+        }
+        if(!$criteres['organisateur']) {
+            $queryBuilder->setParameter(2, $participantRepository->find($criteres['user_id']));
+        } else if(!$criteres['isInscrit'] && !$criteres['isNotInscrit']){
+            $queryBuilder->setParameter(2, $participantRepository->find($criteres['user_id']));
+        }
+        $query=$queryBuilder->getQuery();
+        //dd($query);
         return $query->getResult();
 
     }
