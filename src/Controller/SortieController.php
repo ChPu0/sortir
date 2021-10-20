@@ -303,7 +303,8 @@ class SortieController extends AbstractController
 
             //$sorties = $sortieRepository->findByIsInscrit($criteres);
             //$sorties = $sortieRepository->findByCampus($criteres);
-            $sorties = $sortieRepository->findByDate($criteres);
+            //$sorties = $sortieRepository->findByDate($criteres); //Ne fonctionne pas : dates SQL
+            $sorties = $sortieRepository->findByName($criteres);
 
         } else {
 
