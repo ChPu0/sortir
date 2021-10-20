@@ -10,3 +10,46 @@
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
+
+body {
+    margin-left: 20%;
+    margin-right: 20%;
+   /* font-family: 'Days One', sans-serif;
+    font-size: 1.5rem;
+    color: #1d1d26;
+    background-image: url("../img/bgsoft.png")*/
+}
+/*
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 100px;
+    margin-bottom: 50px;
+    padding: 30px;
+    font-family: 'Audiowide', cursive;
+    color: #ffffff;
+    background-image: url("../img/bgsoft.png")
+} */
+
+.flash {
+    margin-top: 50px;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.flash-succes {
+    background-color: #0a930c;
+}
+
+.flash-error {
+    background-color: #ef3d3d;
+}
+
+img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+}
+
+.miniature {
+    width: 150px !important;
+    height: 150px !important;
+}
