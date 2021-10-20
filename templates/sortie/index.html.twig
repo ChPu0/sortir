@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }}{{ app_name }}{% endblock %}
+
+{% block body %}
+    <div class="jumbotron mt-2">
+        <h1 class="text-center display-4 lead">{{ page_name }}</h1>
+
+        <a href="{{ path('sortie_add') }}" class="btn btn-primary w-100 mt-4 mb-4">Créée une sortie</a>
+
+
+        {% if form is defined and form is not empty %}
+            <div class="card">
+                <div class="card-header text-center"  id="cardfilterheader"  style="cursor: pointer;">
+                    <h3>Filtrer
+                        <i id="down" class="fas fa-caret-square-up" style="display: none;"></i>
+                        <i id="up" class="fas fa-caret-square-down"></i>
+                    </h3>
+                </div>
+                <div class="card-body" id="cardfilter" style="display: none;">
+                    {{ form_start(form) }}
+                    {{ form_errors(form) }}
+
+                    <div class="row">
+                        <div class="form-col col-lg-8">
+                            <div class="form-group col-lg-auto">
+                                {{ form_row(form.lieu) }}
+                            </div>
+                            <div class="form-group col-lg-auto">
+                                {{ form_row(form.start) }}
+                            </div>
+                            <div class="form-group col-lg-auto">
+                                {{ form_row(form.close) }}
+                            </div>
+                        </div>
+
+                        <div class="form-col col-md-auto">
+                            <div class="form-group col-md-auto">
+                                {{ form_row(form.ownorganisateur) }}
+                            </div>
+                            <div class="form-group col-md-auto">
+                                {{ form_row(form.subscibed) }}
+                            </div>
+                            <div class="form-group col-md-auto">
+                                {{ form_row(form.unsubscribed) }}
+                            </div>
+                            <div class="form-group col-md-auto">
+                                {{ form_row(form.passed) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {{ form_row(form.submit) }}
+
+                    {{ form_widget(form._token) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+        {% endif %}
+
+        <hr>
+
+        <table id="sortieTable" class="table table-striped table-bordered" style="width:100%">
+            <thead class="thead-dark text-center">
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Début de la sortie</th>
+                <th scope="col">Fin des inscriptions</th>
+                <th scope="col">Inscrits/Places</th>
+                <th scope="col">Inscrits</th>
+                <th scope="col">Etat</th>
+                <th scope="col">Organisateur</th>
+                <th scope="col">Action</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            {% if sorties is defined and sorties is not empty %}
+                {% for sortie in sorties %}
+                    {% set dateDebut = sortie.dateHeureDebut|date('Y-m-d') %}
+                    {% set dateDifference = "now"|date('Y-m-d') %}
+                    {% set dateEcart = date(dateDifference).diff(date(dateDebut))%}
+                    {% if dateEcart.days >= 30 %}
+                    {% else %}
+                        {% set inscrit = false %}
+                        {% for inscription in app.user.pseudo %}
+                            {% for inscriptions in sortie.inscriptions %}
+                                {% if inscription == inscriptions %}
+                                    {% set inscrit = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% if subscibed and inscrit == false %}
+                        {% else %}
+                            <tr class="text-center">
+                                <td scope="row">{{ sortie.nom }}</td>
+                                <td scope="row">{{ sortie.dateHeureDebut|date('Y-m-d H:i:s')}}</td>
+                                <td scope="row">{{ sortie.dateLimiteInscription|date('Y-m-d') }}</td>
+                                <td scope="row">{{ sortie.organisateur|length }}/{{ sortie.nbinscriptionsmax }}</td>
+                                <td scope="row" class="text-success">
+                                    {% if inscrit %}
+                                        <i class="fas fa-check-circle"></i>
+                                    {% endif %}
+                                </td>
+                                <td scope="row">
+                                    {% if sortie.etat == 'Créée' %}
+                                        <span class="btn" data-toggle="tooltip" data-placement="top" title="Créée">
+                                        <i class="fas fa-tools text-danger"></i>
+                                    </span>
+                                    {% elseif sortie.etat == 'En cours d\'activité' %}
+                                        <span class="btn" data-toggle="tooltip" data-placement="top" title="En cours d'activité">
+                                        <i class="fas fa-pause-circle text-warning"></i>
+                                    </span>
+                                    {% elseif sortie.etat == 'Ouverte' %}
+                                        <span class="btn" data-toggle="tooltip" data-placement="top" title="Ouverte">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </span>
+                                    {% elseif sortie.etat == 'Clôturée'%}
+                                        <span class="btn" data-toggle="tooltip" data-placement="top" title="Clôturée">
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                    </span>
+                                    {% elseif sortie.etat == 'Annulée' %}
+                                        <span class="btn" data-toggle="tooltip" data-placement="top" title="Annulée">
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                    </span>
+                                    {% else %}
+                                    {% endif %}
+                                </td>
+                                <td scope="row">{{ sortie.organisateur.prenom}} {{ sortie.organisateur.nom|slice(0, 1)}}.</td>
+
+                                <td scope="row" id="rowAction">
+                                    <div class="btn-group">
+                                        <a href="{{ path('afficher_sortie', {'id': sortie.id}) }}" class="btn btn-outline-info" data-toggle="tooltip" data-placement="top" title="Information">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+
+                                        {% if app.user == sortie.organisateur or app.user.pseudo == "admin"%}
+                                            <a href="{{ path('modif_sortie', {'id': sortie.id}) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Modifier">
+                                                <i class="far fa-edit"></i>
+                                            </a>
+                                            {% if sortie.etat != "Annulée" %}
+                                                <a href="{{ path('sortie', {'id': sortie.id}) }}" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Annuler">
+                                                    <i class="far fa-window-close"></i>
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+
+                                        {% if inscrit and sortie.dateLimiteInscription|date('Y-m-d')>"now"|date('Y-m-d') %}
+                                            <a id="désister" href="{{ path('', {'id': sortie.id}) }}" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Se désister">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                            </a>
+                                        {% elseif sortie.organisateur|length != sortie.nbinscriptionsmax and sortie.dateLimiteInscription|date('Y-m-d')>"now"|date('Y-m-d') and sortie.etat == "Ouverte"%}
+                                            <a id="inscrire" href="{{ path('add_participant_sortie', {'id': sortie.id}) }}" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="S'inscrire">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </a>
+                                        {% else %}
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+
+                {% endfor %}
+            {% else %}
+                <tr class="text-center">
+                    <th class="text-center text-muted" scope="row" colspan="8">Aucune événement trouvé...</th>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/sortiesliste.js') }}"></script>
+{% endblock %}

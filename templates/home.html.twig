@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} {{ page_name }}{% endblock %}
+
+{% block body %}
+    <div class="jumbotron mt-2">
+        <h1>{{ page_name }}</h1>
+        <p class="lead">Bienvenu sur Sortir.com</p>
+        <small class="text-muted">Le meilleur site du monde</small>
+    </div>
+    <a href="{{ path('sortie_add') }}"><input type="button" value="Créer une sortie"></a>
+{% endblock %}

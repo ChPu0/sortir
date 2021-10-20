@@ -6,6 +6,7 @@ use App\Repository\SortieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=SortieRepository::class)
@@ -20,11 +21,15 @@ class Sortie
     private $id;
 
     /**
+     * @Assert\Length(min=5, max=30,
+     *     minMessage="Le nom de la sortie doit avoir au minimum 5 caractère",
+     *     maxMessage="Le nom de la sortie ne peut dépasser 15 caractères")
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
+     *
      * @ORM\Column(type="datetime")
      */
     private $dateHeureDebut;
@@ -35,6 +40,7 @@ class Sortie
     private $duree;
 
     /**
+     * @Assert\LessThan(propertyPath="dateHeureDebut")
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $dateLimiteInscription;
@@ -56,6 +62,7 @@ class Sortie
     private $lieu;
 
     /**
+     *
      * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
      * @ORM\JoinColumn(nullable=false)
      */

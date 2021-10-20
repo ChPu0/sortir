@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 class TestController extends AbstractController
 {
     /**
-     * @Route("/test", name="test")
+     * @Route("/test", name="test_index")
      */
     public function index(SortieRepository $sortieRepository): Response
     {
@@ -40,7 +40,7 @@ class TestController extends AbstractController
         $sortie->getInscrits()->count() == $sortie->getNbInscriptionsMax()){
             $this->addFlash('error', "La sortie n'existe plus ou est complète");
             return $this->redirectToRoute(
-                'test'
+                'test_index'
                 #TODO=Route à définir
             );
         }
@@ -53,7 +53,7 @@ class TestController extends AbstractController
         if($sortie->getInscrits()->contains($participant)){
             $this->addFlash('error', "Vous êtes déjà inscrits à cette sortie");
             return $this->redirectToRoute(
-                'test'
+                'test_index'
             #TODO=Route à définir
             );
             //S'il n'est pas inscrit, on l'ajoute à la sortie
@@ -64,7 +64,7 @@ class TestController extends AbstractController
 
             $this->addFlash('success', "Vous êtes inscrits à la sortie " . $sortie->getNom() . "!");
             return $this->redirectToRoute(
-                'test'
+                'test_index'
             #TODO=Route à définir
             );
         }

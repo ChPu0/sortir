@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} {{ page_name }}{% endblock %}
+
+{% block body %}
+    <div class="jumbotron mt-2">
+        <h1 class="text-center display-4 lead">{{ page_name }}</h1>
+
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+
+
+
+                 {{ form_row(form.nom) }}
+
+                {{ form_row(form.dateHeureDebut) }}
+                {{ form_row(form.dateLimiteInscription) }}
+                {{ form_row(form.nbinscriptionsmax) }}
+                {{ form_row(form.duree) }}
+                {{ form_row(form.infosSortie) }}
+                {{ form_row(form.campus) }}
+                {{ form_row(form.ville) }}
+
+
+            <div class="row">
+                <div class="col-1">
+                    {{ form_row(form.lieu) }}
+                    </div>
+
+                    <div class="col-1">
+                      <a href="{{ path('add_lieu') }}"><i class="fa fa-plus-circle" style="font-size:24px"></i></a>
+                </div>
+
+            </div>
+                {{ form_row(form.rue) }}
+                {{ form_row(form.codePostale) }}
+                {{ form_row(form.latitude) }}
+                {{ form_row(form.longitude) }}
+
+
+
+
+   {{ form_widget(form) }}
+
+
+
+
+
+
+
+
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/sortiesadd.js') }}"></script>
+{% endblock %}
