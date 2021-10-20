@@ -9,9 +9,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +28,6 @@ class ListSortieType extends AbstractType
 
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'placeholder' => 'Choisir un campus',
                 'choice_label' => 'nom',
                 'query_builder' => function(EntityRepository $repository) {},
                 'attr' => [
@@ -41,13 +38,15 @@ class ListSortieType extends AbstractType
 
             ->add('nom', SearchType::class, [
                 'label' => 'Le nom de la sortie contient : ',
+                'required' => false,
+                'trim' => true,
                 'attr' => [
                     'name' => "nom",
                     'class' => 'form-control w-50'
                 ]
             ])
             ->add('dateHeureMin', DateType::class, [
-
+                'required' => true,
                 'label' => 'Entre : ',
                 'widget' => 'single_text',
                 'attr' => [
@@ -55,24 +54,16 @@ class ListSortieType extends AbstractType
                 ]
             ])
             ->add('dateHeureMax', DateType::class, [
-
+                'required' => true,
                 'label' => 'Et : ',
                 'widget' => 'single_text',
                 'attr' => [
                     'name' => 'dateHeureMax'
                 ]
             ])
-            //->add('dateHeureDebut')
-            //->add('duree')
-            //->add('dateLimiteInscription')
-            //->add('nbInscriptionsMax')
-            //->add('infosSortie')
-            //->add('lieu')
-            /*->add('etat', EntityType::class, [
-                'class' => Etat::class,
-                'choice_label' => 'libelle'
-            ])*/
+
             ->add('organisateur', CheckboxType::class,[
+                'required' => false,
                 'label' => 'Sorties dont je suis l\'organisateur/trice',
                 'attr' => [
                     'name' => "organisateur",
@@ -80,23 +71,24 @@ class ListSortieType extends AbstractType
                 ]
             ])
 
-            ->add('inscrits', RepeatedType::class,[
-                'type' => CheckboxType::class,
-                'first_options' => [
-                    'label' => 'Sorties auxquelles je suis inscrit/e',
-                    'attr' => [
-                        'name' => "inscrit",
-                        'class' => "form-check-input"
-                    ]],
-                'second_options' => [
-                    'label' => 'Sorties auxquelles je ne suis pas inscrit/e',
-                    'attr' => [
-                        'name' => "non-inscrit",
-                        'class' => "form-check-input"
-                    ]]
-            ])
+            ->add('isInscrit', CheckboxType::class,[
+                'required' => false,
+                'label' => 'Sorties auxquelles je suis inscrit/e',
+                'attr' => [
+                    'name' => "inscrit",
+                    'class' => "form-check-input"
+            ]])
+             ->add('isNotInscrit', CheckboxType::class,[
+                'required' => false,
+                'label' => 'Sorties auxquelles je ne suis pas inscrit/e',
+                'attr' => [
+                    'name' => "non-inscrit",
+                    'class' => "form-check-input"
+            ]])
+
 
             ->add('etat', CheckboxType::class,[
+                'required' => false,
                 'label' => 'Sorties passées',
                 'attr' => [
                     'name' => "Passée",

@@ -12,6 +12,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use phpDocumentor\Reflection\Types\Boolean;
+use Symfony\Component\Mailer\Transport\Smtp\Stream\AbstractStream;
 
 /**
  * @method Sortie|null find($id, $lockMode = null, $lockVersion = null)
@@ -26,99 +27,79 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findByCampus()
+    public function findByCampus($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
         $queryBuilder->innerJoin('s.campus', 'sc')
-                    ->andWhere('sc.id = 1');
+                    ->andWhere('sc.id = ' . $criteres['campus_id']);
 
         $query = $queryBuilder->getQuery();
-        $query->setMaxResults(30);
         $paginator = new Paginator($query);
         return $paginator;
     }
 
-    public function findByName($nom)
+    public function findByName($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere('s.nom LIKE %' . $nom . '%');
+        $queryBuilder->andWhere('s.nom LIKE %' . $criteres['nom'] . '%');
         $query = $queryBuilder->getQuery();
 
-        $query->setMaxResults(30);
         $paginator = new Paginator($query);
         return $paginator;
     }
 
-    public function findByDate(DateTimeType $dateMin, DateTimeType $dateMax)
+    public function findByDate($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere('s.date_heure_debut > ' . $dateMin . 'AND s.date_heure_debut < ' . $dateMax);
+        $queryBuilder->andWhere(s.date_heure_debut >= $criteres['date_min'])
+                        ->andWhere(s.date_heure_debut <= $criteres['date_max']);
         $query = $queryBuilder->getQuery();
 
-        $query->setMaxResults(30);
         $paginator = new Paginator($query);
         return $paginator;
     }
 
-    public function findByOrganisateur($organisateur)
+    public function findByOrganisateur($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere('s.organisateur = ' . $organisateur);
+        $queryBuilder->andWhere('s.organisateur = ' . $criteres['organisateur']);
         $query = $queryBuilder->getQuery();
 
-        $query->setMaxResults(30);
         $paginator = new Paginator($query);
         return $paginator;
     }
 
-    public function findByIsInscrit($id)
+    public function findByIsInscrit($criteres)
     {
-        $queryBuilder = $this->createQueryBuilder('s');
+        /*$queryBuilder = $this->createQueryBuilder('s');
         $queryBuilder//->select('s')
                         //->from('sortie', 's')
                         ->innerJoin('s.inscrits', 'sp')
                         //->innerJoin('participant', 'p', 'ON', 'p.id = sp.participant_id')
-                        ->andWhere('sp.id = ' . $id);
+                        ->andWhere('sp.id = ' . $criteres['user_id']);*/
 
         //Table relationnelle sortie_participant :
-        /*$entityManager = $this->getEntityManager();
-        $dql = "SELECT s FROM App\Entity\Sortie as s
-                INNER JOIN sortie_participant 
-                as sp ON s.id = sp.sortie_id 
-                INNER JOIN participant as p ON p.id = sp.participant_id 
-                WHERE sp.participant_id = 2";
+        $entityManager = $this->getEntityManager();
+        $dql = "SELECT * FROM sortie as s
+                INNER JOIN sortie_participant as sp 
+                ON s.id = sp.sortie_id 
+                INNER JOIN participant as p 
+                ON p.id = sp.participant_id 
+                WHERE sp.participant_id = " . $criteres['user_id'];
 
-        //$query = $entityManager->createQuery($dql);*/
+        $query = $entityManager->createQuery($dql);
 
-        $query = $queryBuilder->getQuery();
+        //$query = $queryBuilder->getQuery();
 
-        $query->setMaxResults(30);
         $paginator = new Paginator($query);
         return $paginator;
-
-        /*$sql = "SELECT * FROM sortie as s
-                INNER JOIN sortie_participant 
-                as sp ON s.id = sp.sortie_id 
-                INNER JOIN participant as p ON p.id = sp.participant_id 
-                WHERE sp.participant_id = 1";
-
-        $em = $this->getEntityManager();
-        $rsm = new ResultSetMapping();
-        $query = $em->createNativeQuery($sql, $rsm);
-
-        $sorties = $query->getResult();
-
-        //dd($sorties);
-        //dump($query);
-
-        return $sorties;*/
     }
 
-    public function findByEtatMaxOneMonth($etat)
+    public function findByEtatMaxOneMonth($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere('s.etat = ' . $etat)
-                        ->andWhere('s.date_part("day",age(date_heure_debut, NOW()) <= 30 ');
+        $queryBuilder->andWhere('s.etat = ' . $criteres['etat'])
+                        ->andWhere(s.date_heure_debut < NOW() AND DATEDIFF(NOW(), s.date_heure_debut) <= 30);
         $query = $queryBuilder->getQuery();
 
         $query->setMaxResults(30);
@@ -128,37 +109,54 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findByCriteres($criteres)  {
 
+       /*$queryBuilder = $this->createQueryBuilder('s');
+       $queryBuilder->where('s.campus = ' . $criteres['campus'])
+                       ->andWhere('s.nom LIKE %' . $criteres['nom'] . '%')
+                       ->andWhere('s.date_heure_debut > ' . $criteres['date_min'] . ' AND s.date_heure_debut < ' . $criteres['date_max'])
+                       ->andWhere('date_heure_debut < NOW() AND DATEDIFF(NOW(), date_heure_debut) <= 30')
+                       ->andWhere('s.organisateur = ' . $criteres['organisateur'])
+                       ->andWhere('s.etat = ' . $criteres['etat']);
 
-       $queryBuilder = $this->createQueryBuilder('s')
-                                ->innerJoin('s.campus', 'sc')
-                                ->andWhere('sc.nom = ' . $criteres['campus'])
-                                ->andWhere('s.nom LIKE %' . $criteres['nom'] . '%')
-                                ->andWhere('s.organisateur = ' . $criteres['organisateur'])
-                                ->andWhere('s.date_heure_debut > ' . $criteres['date_min'] . 'AND s.date_heure_debut < ' . $criteres['date_max'])
-                                ->innerJoin('s.inscrits', 'sp')
-                                ->innerJoin('participant', 'p', 'ON', 'p.id = sp.participant_id')
-                                ->andWhere('sp.id = ' . $criteres['id_user'])
-                                ->andWhere('s.etat = ' . $criteres['etat'])
-                                ->andWhere('s.date_part("day",age(date_heure_debut, NOW()) <= 30 ');
-       $query = $queryBuilder->getQuery();
+                       //->innerJoin('sortie_participant', 'sp', 'ON sp.participant_id = ' . $criteres['user_id']);
+       $query = $queryBuilder->getQuery();*/
+
+        $count = 1;
+        $criteres['nom'] = str_replace("'", "", $criteres['nom']) ;
 
         //En DQL :
-        /*$entityManager = $this->getEntityManager();
-        $dql = "
-                SELECT s 
-                FROM App\Entity\Sortie s 
-                WHERE s.nom LIKE % ". $criteres['nom'] . "%" .
-                "AND s.organisateur = ". $criteres['organisateur'] .
-                "AND s.date_heure_debut > " . date('YYYY-mm-dd', $criteres['date_heure_debut']) . "AND s.date_heure_debut < " . date('YYYY-mm-dd', $criteres['date_heure_fin']) .
-                "INNER JOIN 's.campus', 'sc'
-                WHERE 'sc.id' = " . $criteres['campus']->getNom() .
-             "AND WHERE 's.etat = " . $criteres['etat'] .
-                "AND WHERE 's.date_part('day',age(date_heure_debut, NOW()) <= 30 '
+        $entityManager = $this->getEntityManager();
+        $rsm = new ResultSetMapping();
+
+        $dql = "SELECT * FROM sortie s 
+                WHERE s.campus_id = ?
+                AND s.nom LIKE '%'?'%'
+                AND s.organisateur_id = ?
+                AND s.date_heure_debut >= ?
+                AND s.date_heure_debut <= ?
+                AND s.etat_id = ?
+                AND s.date_heure_debut < NOW() AND DATEDIFF(NOW(), s.date_heure_debut) <= 30
+                INNER JOIN sortie_participant as sp 
+                ON sp.sortie_id = s.id 
+                AND sp.participant_id = ?  
+                INNER JOIN participant as p 
+                ON p.id = sp.participant_id
                 ";
 
-        $query = $entityManager->createQuery($dql);*/
 
-        return new Paginator($query);
+
+
+        $query = $entityManager->createNativeQuery($dql, $rsm);
+
+        $query->setParameter(1, $criteres['campus_id']);
+        $query->setParameter(2, $criteres['nom']);
+        $query->setParameter(3, $criteres['user_id']);
+        $query->setParameter(4, $criteres['date_min']);
+        $query->setParameter(5, $criteres['date_max']);
+        $query->setParameter(6, $criteres['etat_id']);
+        $query->setParameter(7, $criteres['user_id']);
+
+        return $query->getResult();
+
     }
 
     // /**
