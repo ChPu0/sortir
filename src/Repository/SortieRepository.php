@@ -51,8 +51,9 @@ class SortieRepository extends ServiceEntityRepository
     public function findByDate($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere(s.date_heure_debut >= $criteres['date_min'])
-                        ->andWhere(s.date_heure_debut <= $criteres['date_max']);
+        $queryBuilder->andWhere('s.dateHeureDebut >=' . $criteres['date_min'])
+                        ->andWhere('s.dateHeureDebut <=' . $criteres['date_max']);
+
         $query = $queryBuilder->getQuery();
 
         $paginator = new Paginator($query);
@@ -71,15 +72,15 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findByIsInscrit($criteres)
     {
-        /*$queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder//->select('s')
-                        //->from('sortie', 's')
+        $queryBuilder = $this->createQueryBuilder('s');
+        $queryBuilder
+
                         ->innerJoin('s.inscrits', 'sp')
-                        //->innerJoin('participant', 'p', 'ON', 'p.id = sp.participant_id')
-                        ->andWhere('sp.id = ' . $criteres['user_id']);*/
+                        ->innerJoin('participant', 'p', 'ON', 'p.id = sp.participant_id')
+                        ->andWhere('sp.id = ' . $criteres['user_id']);
 
         //Table relationnelle sortie_participant :
-        $entityManager = $this->getEntityManager();
+        /*$entityManager = $this->getEntityManager();
         $dql = "SELECT * FROM sortie as s
                 INNER JOIN sortie_participant as sp 
                 ON s.id = sp.sortie_id 
@@ -87,9 +88,9 @@ class SortieRepository extends ServiceEntityRepository
                 ON p.id = sp.participant_id 
                 WHERE sp.participant_id = " . $criteres['user_id'];
 
-        $query = $entityManager->createQuery($dql);
+        $query = $entityManager->createQuery($dql);*/
 
-        //$query = $queryBuilder->getQuery();
+        $query = $queryBuilder->getQuery();
 
         $paginator = new Paginator($query);
         return $paginator;
@@ -109,22 +110,24 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findByCriteres($criteres)  {
 
-       /*$queryBuilder = $this->createQueryBuilder('s');
+       $queryBuilder = $this->createQueryBuilder('s');
        $queryBuilder->where('s.campus = ' . $criteres['campus'])
                        ->andWhere('s.nom LIKE %' . $criteres['nom'] . '%')
                        ->andWhere('s.date_heure_debut > ' . $criteres['date_min'] . ' AND s.date_heure_debut < ' . $criteres['date_max'])
                        ->andWhere('date_heure_debut < NOW() AND DATEDIFF(NOW(), date_heure_debut) <= 30')
                        ->andWhere('s.organisateur = ' . $criteres['organisateur'])
-                       ->andWhere('s.etat = ' . $criteres['etat']);
+                       ->andWhere('s.etat = ' . $criteres['etat'])
 
-                       //->innerJoin('sortie_participant', 'sp', 'ON sp.participant_id = ' . $criteres['user_id']);
-       $query = $queryBuilder->getQuery();*/
+                       ->innerJoin('s.inscrits', 'sp')
+                       ->innerJoin('participant', 'p', 'ON', 'p.id = sp.participant_id')
+                       ->andWhere('sp.id = ' . $criteres['user_id']);
+       $query = $queryBuilder->getQuery();
 
         $count = 1;
         $criteres['nom'] = str_replace("'", "", $criteres['nom']) ;
 
         //En DQL :
-        $entityManager = $this->getEntityManager();
+        /*$entityManager = $this->getEntityManager();
         $rsm = new ResultSetMapping();
 
         $dql = "SELECT * FROM sortie s 
@@ -143,8 +146,6 @@ class SortieRepository extends ServiceEntityRepository
                 ";
 
 
-
-
         $query = $entityManager->createNativeQuery($dql, $rsm);
 
         $query->setParameter(1, $criteres['campus_id']);
@@ -153,7 +154,7 @@ class SortieRepository extends ServiceEntityRepository
         $query->setParameter(4, $criteres['date_min']);
         $query->setParameter(5, $criteres['date_max']);
         $query->setParameter(6, $criteres['etat_id']);
-        $query->setParameter(7, $criteres['user_id']);
+        $query->setParameter(7, $criteres['user_id']);*/
 
         return $query->getResult();
 

@@ -20,9 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/sortie", name="sortie_")
- */
+
 class SortieController extends AbstractController
 {
     /**
@@ -233,8 +231,8 @@ class SortieController extends AbstractController
     }
 
 
-
-     * @Route("/liste", name="liste")
+    /**
+     * @Route("/sortie/liste", name="sortie_liste")
      * @param EntityManagerInterface $entityManager
      * @param SortieRepository $sortieRepository
      * @return Response
