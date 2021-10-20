@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+ {{ parent() }} | Gérer les lieux
+{% endblock %}
+
+{% block body %}
+    <h1>Modifier les lieux</h1>
+    <table class="table table-sm table-striped table-bordered table-hover">
+        <tr class="table-dark">
+            <th>Ville</th>
+            <th>Nom du Lieu</th>
+            <th>Action</th>
+        </tr>
+
+        {% for lieu in lieux %}
+
+            <tr>
+                <td>{{ lieu.ville.nom | upper }}</td>
+                <td>{{ lieu.nom }}</td>
+                {# todo lien vers formulaire de modification #}
+                <td><a href="#"><input type="button" value="Modifier" class="btn btn-sm btn-outline-success"></a>
+                    <a href="{{ path('lieu_supprimer',{'id':lieu.id}) }}"><input type="button" value="Supprimer" class="btn btn-sm btn-outline-danger"></a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {# todo lien vers formulaire de modification #}
+    <a href="{{ path('lieu_ajout') }}"><input type="button" value="Ajouter un lieu" class="btn btn-sm btn-outline-primary"></a>
+{% endblock %}
+

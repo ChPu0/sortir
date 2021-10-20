@@ -44,6 +44,7 @@ class AnnulationSortieController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('succes', 'Sortie annulée');
+                //todo ajouter une page de redirection à la validation du formulaire
             }
         }
         return $this->render('annulation_sortie/annulation.html.twig',  ["sortie"=>$sortieSelected, "annulationForm"=>$annulationForm->createView()]);
