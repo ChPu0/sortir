@@ -25,11 +25,8 @@
                         <td scope="row">{{ ville.nom }}</td>
                         <td scope="row">{{ ville.codePostal}}</td>
                         {% if is_granted('ROLE_ADMIN') %}
-                            <td scope="row">
-                                <div class="btn-group">
-                                    <a href="{{ path('delete_ville', {'id': ville.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
-                                    <a href="{{ path('edit_ville', {'id': ville.id}) }}" class="btn btn-success"><i class="far fa-edit"></i></a>
-                                </div>
+                            <td><a href="{{ path('edit_ville', {'id':ville.id}) }}"><input type="button" value="Modifier" class="btn btn-sm btn-outline-success"></a>
+                                <a href="{{ path('delete_ville',{'id':ville.id}) }}"><input type="button" value="Supprimer" class="btn btn-sm btn-outline-danger"></a>
                             </td>
                         {% endif %}
                     </tr>

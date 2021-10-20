@@ -51,7 +51,7 @@ class ProfilController extends AbstractController
     //-----------------------------------------
 
     /**
-     * @Route("/profil/create", name="profil_create")
+     * @Route("/admin/profil/create", name="profil_create")
      */
     public function create(
         EntityManagerInterface $entityManager,
@@ -189,7 +189,7 @@ class ProfilController extends AbstractController
         return $this->redirectToRoute('profil_show', ["id" => $participant->getId()]);
     }
 
-        return $this->render('profil/createProfil.html.twig', ["profilForm" => $profilForm->createView(), "img" =>$participant->getImgProfil()]);
+        return $this->render('profil/amendProfil.html.twig', ["profilForm" => $profilForm->createView(), "img" =>$participant->getImgProfil()]);
     }
 
     /**

@@ -25,11 +25,8 @@
                         <td scope="row">{{ one.id }}</td>
                         <td scope="row">{{ one.nom }}</td>
                         {% if is_granted('ROLE_ADMIN') %}
-                            <td scope="row">
-                                <div class="btn-group">
-                                    <a href="{{ path('delete_campus', {'id': one.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
-                                    <a href="{{ path('edit_campus', {'id': one.id}) }}" class="btn btn-success"><i class="far fa-edit"></i></a>
-                                </div>
+                            <td><a href="{{ path('edit_campus', {'id':one.id}) }}"><input type="button" value="Modifier" class="btn btn-sm btn-outline-success"></a>
+                                <a href="{{ path('delete_campus',{'id':one.id}) }}"><input type="button" value="Supprimer" class="btn btn-sm btn-outline-danger"></a>
                             </td>
                         {% endif %}
                     </tr>
