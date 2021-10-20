@@ -51,7 +51,7 @@ class ProfilController extends AbstractController
     //-----------------------------------------
 
     /**
-     * @Route("/profil/create", name="profil_create")
+     * @Route("/admin/profil/create", name="profil_create")
      */
     public function create(
         EntityManagerInterface $entityManager,

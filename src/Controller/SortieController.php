@@ -26,20 +26,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/sortie", name="sortie_")
+ * @Route("", name="sortie_")
  */
 class SortieController extends AbstractController
 {
-    /**
-     * @Route("", name="menu")
-     */
-    public function index(): Response
-    {
-        return $this->render('sortie/index.html.twig', [
-            'controller_name' => 'SortieController',
 
-        ]);
-    }
 
     /**
 
@@ -238,7 +229,7 @@ class SortieController extends AbstractController
 
 
     /**
-     * @Route("/liste", name="liste")
+     * @Route("/", name="liste")
      * @param EntityManagerInterface $entityManager
      * @param SortieRepository $sortieRepository
      * @return Response
