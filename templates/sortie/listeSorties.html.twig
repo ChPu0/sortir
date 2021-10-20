@@ -104,9 +104,9 @@
                         <td>{{ sortie.dateLimiteInscription | date('d/m/Y', 'Europe/Paris') }}</td>
                         <td>{{ sortie.inscrits | length }} / {{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
-                        <td>{%  if criteres['isInscrit'] %}
+                       {#   <td>{%  if criteres['isInscrit'] %}
                             X
-                            {% endif %}</td>
+                            {% endif %}</td> #}
                         <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
                         <td>Actions : Conditions</td>
 

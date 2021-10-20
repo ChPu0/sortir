@@ -301,9 +301,9 @@ class SortieController extends AbstractController
                 'isNotInscrit' => $criteresIsNotInscrit
             ];
 
-            //$sorties = $sortieRepository->findByIsInscrit($criteres);
+            $sorties = $sortieRepository->findByIsInscrit($criteres);
             //$sorties = $sortieRepository->findByCampus($criteres);
-            $sorties = $sortieRepository->findByDate($criteres);
+            //$sorties = $sortieRepository->findByDate($criteres);
 
         } else {
 
