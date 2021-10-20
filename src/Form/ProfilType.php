@@ -33,7 +33,8 @@ class ProfilType extends AbstractType
                 'required'=>'true'
             ])
             ->add('telephone',TextType::class,[
-                'label'=>'Téléphone : '
+                'label'=>'Téléphone : ',
+                'required' => false
             ])
             ->add('email',EmailType::class,[
                 'label'=>'Email : ',

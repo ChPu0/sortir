@@ -39,7 +39,7 @@ class CampusController extends AbstractController
             $campus = $form->getData();
             $em->persist($campus);
             $em->flush();
-            $this->addFlash('success', 'Le campus a bien été ajouté !');
+            $this->addFlash('succes', 'Le campus a bien été ajouté !');
             return $this->redirectToRoute('campus');
         }
 
@@ -59,7 +59,7 @@ class CampusController extends AbstractController
         $form->add('submit',SubmitType::class, [
             'label' => 'Modifier',
             'attr' => [
-                'class' => 'btn btn-primary w-100'
+                'class' => 'btn btn-outline-primary'
             ]
         ]);
         $form->handleRequest($request);
@@ -69,7 +69,7 @@ class CampusController extends AbstractController
 
             $em->persist($campus);
             $em->flush();
-            $this->addFlash('success', 'Le campus a bien été modifé !');
+            $this->addFlash('succes', 'Le campus a bien été modifé !');
 
             $this->campusListe = $em->getRepository(campus::class)->findAll();
 
@@ -92,7 +92,7 @@ class CampusController extends AbstractController
 
         $em->remove($campus);
         $em->flush();
-        $this->addFlash('success', 'Le campus a bien été supprimé.');
+        $this->addFlash('succes', 'Le campus a bien été supprimé.');
 
         return $this->redirectToRoute('campus');
     }

@@ -75,7 +75,7 @@ class LieuController extends AbstractController
         $form->add('send',SubmitType::class, [
             'label' => 'Modifier',
             'attr' => [
-                'class' => 'btn btn-primary w-100'
+                'class' => 'btn btn-outline-primary'
             ]
         ]);
         $form->handleRequest($request);
@@ -85,7 +85,7 @@ class LieuController extends AbstractController
 
             $em->persist($lieu);
             $em->flush();
-            $this->addFlash('success', 'Le lieu a été modifié !');
+            $this->addFlash('succes', 'Le lieu a été modifié !');
 
             $this->lieuxListe = $em->getRepository(Lieu::class)->findAll();
 

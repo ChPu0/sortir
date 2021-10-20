@@ -32,17 +32,20 @@ class CreeSortieType extends AbstractType
                 'label'    => 'Date début de la sortie: ', 'widget'=>'single_text'
                 ])
             ->add('dateLimiteInscription',DateType::class,[
-                'label'    => 'Date limite d\'inscription: ', 'widget'=>'single_text'])
+                'label'    => 'Date limite d\'inscription: ', 'widget'=>'single_text',
+                'required'=>false])
 
             ->add('nbinscriptionsmax',IntegerType::class, [
-                'label' => 'Nombre de places: '
+                'label' => 'Nombre de places: ',
+                'required'=>false
             ])
 
-            ->add('duree',null, ['label'=>'Durée: '])
+            ->add('duree',null, ['label'=>'Durée: ', 'required'=>false])
 
 
             ->add('infosSortie',TextareaType::class, [
-                'label' => 'Description et infos: '
+                'label' => 'Description et infos: ',
+                'required'=>false
             ])
             ->add('lieu',EntityType::class, ['placeholder'=>'Choisir le lieu', 'label'=>'Lieu: ',
                 'class' => Lieu::class,
@@ -60,11 +63,10 @@ class CreeSortieType extends AbstractType
             ->add('ville', EntityType::class,['mapped'=>false, 'class'=>Ville::class,'placeholder'=>'Choisir la ville ','choice_label'=>'nom'])
 
             ->add('rue',EntityType::class,['class'=>Lieu::class,'mapped'=>false,'label'=>'Rue: ', 'choice_label'=>'rue', 'placeholder'=>'Choisir la rue'])
-            ->add('codePostale',IntegerType::class,['mapped'=>false, 'label'=>'Code postale: '] )
-            ->add('latitude', IntegerType::class, ['mapped'=>false, 'label'=>'Latitude: '])
-            ->add('longitude', IntegerType::class, ['mapped'=>false, 'label'=>'Longiture: '
-            ]);
-/**
+            ->add('codePostal',IntegerType::class,['mapped'=>false, 'label'=>'Code postal: '] )
+            ->add('latitude', IntegerType::class, ['mapped'=>false, 'label'=>'Latitude: ', 'required'=>false])
+            ->add('longitude', IntegerType::class, ['mapped'=>false, 'label'=>'Longitude: ', 'required'=>false])
+
             ->add('save', SubmitType::class,[
                 'label' =>'Enregistrer',
                 'attr' => [
@@ -84,7 +86,7 @@ class CreeSortieType extends AbstractType
                     'class' => 'btn btn-warning w-50']
             ]);
 
-*/
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

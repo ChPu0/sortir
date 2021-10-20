@@ -7,10 +7,15 @@ use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Entity\Ville;
+use App\Form\CreeSortieType;
+use App\Form\LieuType;
 use App\Form\ListSortieType;
+use App\Form\ModifySortieType;
 use App\Form\SelectSortieType;
 use App\Form\TargetSortieType;
 use App\Repository\CampusRepository;
+use App\Repository\EtatRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use ContainerQM4dqw5\getCampusRepositoryService;
@@ -46,7 +51,7 @@ class SortieController extends AbstractController
         $lieu = new Lieu();
         $formLieu = $this->createForm(LieuType::class, $lieu);
         $formLieu->handleRequest($request);
-        $form = $this->createForm(ModifySortieType::class, $sortie);
+        $form = $this->createForm(CreeSortieType::class, $sortie);
         $form -> handleRequest($request);
 
         $listVille = $em->getRepository(Ville::class)->findAll();
@@ -81,11 +86,10 @@ class SortieController extends AbstractController
                 $sortie->setEtatSortie("Ouvert");
 
 */
-            if( $form->get('save')->isSubmitted()){
+            if( $form->get('save')->isClicked()){
                 $etat = $etatRepository->findOneBy(['libelle'=>'Créée']);
                 $sortie->setEtat($etat);
-
-            }elseif( $form->get('publish')->isSubmitted()){
+            } else if( $form->get('publish')->isClicked()){
                 $etat = $etatRepository->findOneBy(['libelle'=>'Ouverte']);
                 $sortie->setEtat($etat);
 
@@ -98,7 +102,7 @@ class SortieController extends AbstractController
             $em->persist($sortie);
             $em->flush();
             $this->addFlash('success', 'La sortie a été ajoutée !');
-            return $this->redirectToRoute('sortie');
+            return $this->redirectToRoute('sortie_liste');
         }
 
         return $this->render('sortie/createSortie.html.twig', [
