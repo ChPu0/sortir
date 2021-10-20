@@ -52,10 +52,9 @@ class SortieRepository extends ServiceEntityRepository
     public function findByDate($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere(s.date_heure_debut >= $criteres['date_min'])
-                        ->andWhere(s.date_heure_debut <= $criteres['date_max']);
+        $queryBuilder->andWhere('s.dateHeureDebut > '.$criteres['date_min'])
+                        ->andWhere('s.dateHeureDebut < '.$criteres['date_max']);
         $query = $queryBuilder->getQuery();
-
         $paginator = new Paginator($query);
         return $paginator;
     }
@@ -73,8 +72,16 @@ class SortieRepository extends ServiceEntityRepository
     public function findByIsInscrit($criteres)
     {
 
+        $queryBuilder = $this->createQueryBuilder('s');
+        $queryBuilder//->select('s')
+                        //->from('sortie', 's')
+                        ->innerJoin('s.inscrits', 'sp')
+                        //->innerJoin('participant', 'p', 'ON', 'p.id = sp.participant_id')
+                        ->andWhere('sp.id = ' . $criteres['user_id']);
+
+
         //Table relationnelle sortie_participant :
-        $entityManager = $this->getEntityManager();
+        /*$entityManager = $this->getEntityManager();
         $dql = "SELECT * FROM sortie as s
                 INNER JOIN sortie_participant as sp 
                 ON s.id = sp.sortie_id 
@@ -82,7 +89,10 @@ class SortieRepository extends ServiceEntityRepository
                 ON p.id = sp.participant_id 
                 WHERE sp.participant_id = " . $criteres['user_id'];
 
-        $query = $entityManager->createQuery($dql);
+        $query = $entityManager->createQuery($dql);*/
+
+
+        $query = $queryBuilder->getQuery();
 
 
         $paginator = new Paginator($query);

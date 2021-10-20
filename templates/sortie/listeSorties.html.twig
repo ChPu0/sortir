@@ -11,6 +11,7 @@
             Date du jour : {{ "now" | date('d/m/Y') }}
             <br/>
             Participant : {{ userName }}
+
         </div>
     </section>
 
@@ -52,12 +53,11 @@
 
                 <div class="form-group">
                     {{ form_widget(listSortieType.isInscrit) }}
-                    <label for="isInscrit">Sorties auxquelles je suis inscrit/e</label>
                 </div>
 
                 <div class="form-group">
                     {{ form_widget(listSortieType.isNotInscrit) }}
-                    <label for="isNotInscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
+
                 </div>
 
                 <div class="form-group">
@@ -105,6 +105,7 @@
                         <td>{% if(sortie.getInscrits.contains(user)) %}
                                 <p>X</p>
                         {% endif %}</td>
+
                         <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
                         <td>Actions : Conditions</td>
 
@@ -113,6 +114,7 @@
                     {% else %}
                         <p>Pas de sorties enregistrées pour le moment</p>
                 {% endfor %}
+
                 </tbody>
             </table>
         </div>

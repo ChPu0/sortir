@@ -314,10 +314,9 @@ class SortieController extends AbstractController
             ];
 
 
-
-
             $sorties = $sortieRepository->findByCriteres($criteres);
             //dd($sorties);
+
 
         } else {
 

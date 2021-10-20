@@ -13,6 +13,7 @@ use League\Csv\Reader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -31,7 +32,18 @@ class ProfilController extends AbstractController
          $this->passwordHasher = $passwordHasher;
      }
 
+    //-----------------------------------------
+    // Fonction de d'affiche de tous les USERS
+    //-----------------------------------------
 
+    /**
+     * @Route("/profil", name="profil_affichage")
+     */
+    public function affichage(ParticipantRepository $participantRepository): Response
+    {
+        $membres = $participantRepository->findAll();
+        return $this->render('profil/affichageProfil.html.twig', ["membres"=>$membres]);
+    }
 
 
     //-----------------------------------------
@@ -180,6 +192,72 @@ class ProfilController extends AbstractController
         return $this->render('profil/createProfil.html.twig', ["profilForm" => $profilForm->createView(), "img" =>$participant->getImgProfil()]);
     }
 
+    /**
+     * @Route("/profil/desactiver/{id}", name="profil_desactiver")
+     */
+    public function desactiver(
+        EntityManagerInterface $entityManager,
+        int $id,
+        ParticipantRepository $participantRepository)
+    {
+        $participant = $participantRepository->find($id);
+        $participant->setActif(false);
+
+        $entityManager->persist($participant);
+        $entityManager->flush();
+
+        $this->addFlash('succes', "Membre désactivé !");
+
+        //todo modifier la page de redirection à la validation du formulaire
+        return $this->redirectToRoute('profil_affichage', ["id" => $participant->getId()]);
+    }
+
+    /**
+     * @Route("/profil/reactiver/{id}", name="profil_reactiver")
+     */
+    public function reactiver(
+        EntityManagerInterface $entityManager,
+        int $id,
+        ParticipantRepository $participantRepository)
+    {
+        $participant = $participantRepository->find($id);
+        $participant->setActif(true);
+
+        $entityManager->persist($participant);
+        $entityManager->flush();
+
+        $this->addFlash('succes', "Membre réactivé !");
+
+        //todo modifier la page de redirection à la validation du formulaire
+        return $this->redirectToRoute('profil_affichage', ["id" => $participant->getId()]);
+    }
+
+
+    //---------------------------------------------------------
+    //Suppression d'un profil
+    //-----------------------------------------------------------
+
+    /**
+     * @Route("/profil/supprimer/{id}", name="profil_supprimer")
+     */
+    public function supprimer(
+        EntityManagerInterface $entityManager,
+        int $id,
+        ParticipantRepository $participantRepository)
+    {
+        $participant = $participantRepository->find($id);
+
+        $entityManager->remove($participant);
+
+        $entityManager->flush();
+
+        $this->addFlash('succes', "Membre supprimé !");
+
+        //todo modifier la page de redirection à la validation du formulaire
+        return $this->redirectToRoute('profil_affichage', ["id" => $participant->getId()]);
+    }
+
+
 
     //todo a adapter au formulaire d'Anaïs
     /**
@@ -209,7 +287,7 @@ class ProfilController extends AbstractController
         }
         else {
             $this->addFlash('error', "Cette activité n'existe pas");
-            return $this->render('error/error.index.html.twig');
+            return $this->render('error/error.list.html.twig');
         }
 
     }
