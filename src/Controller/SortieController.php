@@ -2,15 +2,17 @@
 
 namespace App\Controller;
 
-
-use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Entity\Ville;
+use App\Form\LieuType;
 use App\Form\ListSortieType;
+use App\Form\ModifySortieType;
 use App\Form\SelectSortieType;
 use App\Form\TargetSortieType;
 use App\Repository\CampusRepository;
+use App\Repository\EtatRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use ContainerQM4dqw5\getCampusRepositoryService;
@@ -37,7 +39,6 @@ class SortieController extends AbstractController
     }
 
     /**
-
      * @Route("/sortie/add", name="sortie_add")
      */
     public function add(Request $request, EntityManagerInterface $em, EtatRepository $etatRepository)

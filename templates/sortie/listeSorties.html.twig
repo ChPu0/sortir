@@ -100,10 +100,16 @@
                             {{ sortie.getDateHeureDebut | date('d/m/Y') }}
                         </td>
                         <td>{{ sortie.dateLimiteInscription | date('d/m/Y', 'Europe/Paris') }}</td>
-                        <td>{{ sortie.inscrits | length }} / {{ sortie.nbInscriptionsMax }}</td>
+                        <td>{{ sortie.inscrits | length }} /
+                            {% if (sortie.nbInscriptionsMax != null ) %}
+                                {{ sortie.nbInscriptionsMax }}
+                                {% else %}
+                                    illimité
+                            {% endif %}
+                        </td>
                         <td>{{ sortie.etat.libelle }}</td>
                         <td>{% if(sortie.getInscrits.contains(user)) %}
-                                <p>X</p>
+                                <p class="text-center">X</p>
                         {% endif %}</td>
 
                         <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
@@ -119,7 +125,7 @@
             </table>
         </div>
         <div class="btn btn-success p-3 border border-dark btn-create-sortie">
-            <a href="#" title="Aller vers la page de création de sortie">
+            <a href="{{ path('sortie_sortie_add') }}" title="Aller vers la page de création de sortie">
                 Créer une sortie
             </a>
         </div>
