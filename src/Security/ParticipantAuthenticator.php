@@ -52,7 +52,7 @@ class ParticipantAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-        return new RedirectResponse($this->urlGenerator->generate('test'));
+        return new RedirectResponse($this->urlGenerator->generate('test_index'));
     }
 
     protected function getLoginUrl(Request $request): string

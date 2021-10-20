@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} {{ page_name }}{% endblock %}
+
+{% block body %}
+    <div class="jumbotron mt-2">
+        <h1 class="text-center display-4 lead">{{ page_name }}</h1>
+        {% if form is defined and form is not empty %}
+            {{ form(form) }}
+        {% endif %}
+
+    </div>
+{% endblock %}
