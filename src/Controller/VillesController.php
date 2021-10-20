@@ -40,7 +40,7 @@ class VillesController extends AbstractController
             $ville = $form->getData();
             $em->persist($ville);
             $em->flush();
-            $this->addFlash('success', 'La ville a bien été ajoutée !');
+            $this->addFlash('succes', 'La ville a bien été ajoutée !');
             return $this->redirectToRoute('list_villes');
         }
 
@@ -70,7 +70,7 @@ class VillesController extends AbstractController
 
             $em->persist($ville);
             $em->flush();
-            $this->addFlash('success', 'La ville a bien été modifiée !');
+            $this->addFlash('succes', 'La ville a bien été modifiée !');
 
             $this->villesListe = $em->getRepository(Ville::class)->findAll();
 
@@ -93,7 +93,7 @@ class VillesController extends AbstractController
 
         $em->remove($ville);
         $em->flush();
-        $this->addFlash('success', 'La ville a été supprimée.');
+        $this->addFlash('succes', 'La ville a été supprimée.');
 
         return $this->redirectToRoute('list_villes');
     }

@@ -38,7 +38,7 @@ class TestController extends AbstractController
 
         //Si la sortie n'est pas trouvée ou si elle est complète
         if(!$sortie ||
-        $sortie->getInscrits()->count() == $sortie->getNbInscriptionsMax()){
+            ($sortie->getInscrits()->count() == $sortie->getNbInscriptionsMax() && $sortie->getNbInscriptionsMax() != null)){
             $this->addFlash('error', "La sortie n'existe plus ou est complète");
             return $this->redirectToRoute(
                 'test_index'
@@ -48,7 +48,7 @@ class TestController extends AbstractController
         } else if($today >= $sortie->getDateLimiteInscription()) {
             $this->addFlash('error', "Impossible de s'inscrire, la date d'inscription est dépassée");
             return $this->redirectToRoute(
-                'test'
+                'test_index'
             #TODO=Route à définir
             );
         }

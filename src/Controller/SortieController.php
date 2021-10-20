@@ -7,10 +7,15 @@ use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Entity\Ville;
+use App\Form\CreeSortieType;
+use App\Form\LieuType;
 use App\Form\ListSortieType;
+use App\Form\ModifySortieType;
 use App\Form\SelectSortieType;
 use App\Form\TargetSortieType;
 use App\Repository\CampusRepository;
+use App\Repository\EtatRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use ContainerQM4dqw5\getCampusRepositoryService;
@@ -21,20 +26,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/sortie", name="sortie_")
+ * @Route("", name="sortie_")
  */
 class SortieController extends AbstractController
 {
-    /**
-     * @Route("", name="menu")
-     */
-    public function index(): Response
-    {
-        return $this->render('sortie/index.html.twig', [
-            'controller_name' => 'SortieController',
 
-        ]);
-    }
 
     /**
 
@@ -46,7 +42,7 @@ class SortieController extends AbstractController
         $lieu = new Lieu();
         $formLieu = $this->createForm(LieuType::class, $lieu);
         $formLieu->handleRequest($request);
-        $form = $this->createForm(ModifySortieType::class, $sortie);
+        $form = $this->createForm(CreeSortieType::class, $sortie);
         $form -> handleRequest($request);
 
         $listVille = $em->getRepository(Ville::class)->findAll();
@@ -81,11 +77,10 @@ class SortieController extends AbstractController
                 $sortie->setEtatSortie("Ouvert");
 
 */
-            if( $form->get('save')->isSubmitted()){
+            if( $form->get('save')->isClicked()){
                 $etat = $etatRepository->findOneBy(['libelle'=>'Créée']);
                 $sortie->setEtat($etat);
-
-            }elseif( $form->get('publish')->isSubmitted()){
+            } else if( $form->get('publish')->isClicked()){
                 $etat = $etatRepository->findOneBy(['libelle'=>'Ouverte']);
                 $sortie->setEtat($etat);
 
@@ -98,7 +93,7 @@ class SortieController extends AbstractController
             $em->persist($sortie);
             $em->flush();
             $this->addFlash('success', 'La sortie a été ajoutée !');
-            return $this->redirectToRoute('sortie');
+            return $this->redirectToRoute('sortie_liste');
         }
 
         return $this->render('sortie/createSortie.html.twig', [
@@ -234,7 +229,7 @@ class SortieController extends AbstractController
 
 
     /**
-     * @Route("/liste", name="liste")
+     * @Route("/", name="liste")
      * @param EntityManagerInterface $entityManager
      * @param SortieRepository $sortieRepository
      * @return Response
@@ -279,10 +274,22 @@ class SortieController extends AbstractController
 
             if ($criteresDateMin instanceof \DateTime) {
                 $criteresDateMin = $criteresDateMin->format('Y-m-d');
+            } else {
+                $criteresDateMin = \DateTime::createFromFormat('Y-m-d', '1800-01-01');
+                $criteresDateMin = $criteresDateMin->format('Y-m-d');
             }
 
             if ($criteresDateMax instanceof \DateTime) {
                 $criteresDateMax = $criteresDateMax->format('Y-m-d');
+            } else {
+                $criteresDateMax = \DateTime::createFromFormat('Y-m-d', '2999-12-31');
+                $criteresDateMax = $criteresDateMax->format('Y-m-d');
+            }
+
+            if($criteresDateMax < $criteresDateMin){
+                $this->addFlash('error', "La date maximum doit être supérieure à la date minimum.");
+
+                $this->redirectToRoute('sortie_liste');
             }
 
             if($criteresEtat == true) {
@@ -301,9 +308,10 @@ class SortieController extends AbstractController
                 'isNotInscrit' => $criteresIsNotInscrit
             ];
 
-            $sorties = $sortieRepository->findByIsInscrit($criteres);
-            //$sorties = $sortieRepository->findByCampus($criteres);
-            //$sorties = $sortieRepository->findByDate($criteres);
+
+            $sorties = $sortieRepository->findByCriteres($criteres);
+            //dd($sorties);
+
 
         } else {
 
