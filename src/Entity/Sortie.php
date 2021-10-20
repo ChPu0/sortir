@@ -76,6 +76,7 @@ class Sortie
 
     /**
      * @ORM\ManyToMany(targetEntity=Participant::class, inversedBy="sorties")
+     * @ORM\JoinTable(name="sortie_participant")
      */
     private $inscrits;
 

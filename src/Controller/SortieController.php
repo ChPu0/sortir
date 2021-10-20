@@ -2,77 +2,42 @@
 
 namespace App\Controller;
 
-use App\Entity\Inscriptions;
+
+use App\Entity\Campus;
 use App\Entity\Lieu;
-
 use App\Entity\Participant;
-
 use App\Entity\Sortie;
-
-use App\Entity\Ville;
-
-use App\Form\AnnulationType;
-
-use App\Form\ModifySortieType;
-use App\Form\FilterType;
-use App\Form\LieuType;
-
-use App\Repository\EtatRepository;
+use App\Form\ListSortieType;
+use App\Form\SelectSortieType;
+use App\Form\TargetSortieType;
+use App\Repository\CampusRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
-
+use ContainerQM4dqw5\getCampusRepositoryService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-
+/**
+ * @Route("/sortie", name="sortie_")
+ */
 class SortieController extends AbstractController
 {
-
-    private $sortiesListe = null;
     /**
-     * @Route("/sortie", name="sortie")
+     * @Route("", name="menu")
      */
-    public function index(Request $request, SortieRepository $sr, EntityManagerInterface $em):Response
+    public function index(): Response
     {
-        $sortiesListe = null;
-        $form = $this->createForm(FilterType::class, null);
-
-        $form->handleRequest($request);
-        $subscibed = null;
-        $unsubscribed = null;
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $lieu = $form['lieu']->getData();
-
-
-            $start = $form['start']->getData();
-            $close = $form['close']->getData();
-
-            $ownorganisateur = $form['ownorganisateur']->getData();
-
-            $subscibed = $form['subscibed']->getData();
-            $unsubscribed = $form['unsubscribed']->getData();
-            $passed = $form['passed']->getData();
-            $participant = $em->getRepository(Participant::class)->find($this->getUser()->getId());
-            $this->sortiesListe = $sr->findAllFilter($participant, $lieu,$ownorganisateur , $start, $close, $passed);
-        }else{
-            $this->sortiesListe = $em->getRepository(Sortie::class)->findAll();
-        }
-
         return $this->render('sortie/index.html.twig', [
-            'unsubscribed' => $unsubscribed,
-            'subscibed' => $subscibed,
-            'app_name' => 'Evenements',
-            'form' => $form->createView(),
-            'sorties' => $this->sortiesListe,
-            'page_name' => "Sorties"
+            'controller_name' => 'SortieController',
+
         ]);
     }
 
     /**
+
      * @Route("/sortie/add", name="sortie_add")
      */
     public function add(Request $request, EntityManagerInterface $em, EtatRepository $etatRepository)
@@ -258,12 +223,8 @@ class SortieController extends AbstractController
             $this->sortiesListe = $em->getRepository(Sortie::class)->findAll();
 
             return $this->redirectToRoute('main_home');
-
         }
-
-
-
-        return $this->render('sortie/annuler.html.twig', [
+       return $this->render('sortie/annuler.html.twig', [
             'page_name' => 'Annuler Sortie',
             'sortie' => $sortie,
             'participants' => $participant,
@@ -271,4 +232,100 @@ class SortieController extends AbstractController
         ]);
     }
 
+
+
+     * @Route("/liste", name="liste")
+     * @param EntityManagerInterface $entityManager
+     * @param SortieRepository $sortieRepository
+     * @return Response
+     */
+    public function findSorties(SortieRepository $sortieRepository,
+                                Request $request,
+                                EntityManagerInterface $entityManager,
+                                ParticipantRepository $participantRepository,
+                                CampusRepository $campusRepository) : Response
+    {
+
+        //$sortiesInscrits = $sortieRepository->findByIsInscrit(1);
+
+        $user = $participantRepository->find($this->getUser()->getId());
+        $userName = $user->getPrenom() . " " . $user->getNom()[0] . ".";
+        $criteres = [];
+        $sorties = $sortieRepository->findAll();
+        $sortiesDefaultList = $sortieRepository->findAll();
+
+        $listSortieType = $this->createForm(ListSortieType::class);
+
+        //$listSortieType->handleRequest($request);
+
+
+        if($listSortieType->handleRequest($request)->isSubmitted() && $listSortieType->isValid()) {
+
+            $criteresCampus = $listSortieType['campus']->getData();
+            $criteresNom = $listSortieType['nom']->getData();
+            $criteresDateMin = $listSortieType['dateHeureMin']->getData();
+            $criteresDateMax = $listSortieType['dateHeureMax']->getData();
+            $criteresOrganisateur = $listSortieType['organisateur']->getData();
+            $criteresIsInscrit = $listSortieType['isInscrit']->getData();
+            $criteresIsNotInscrit = $listSortieType['isNotInscrit']->getData();
+            $criteresEtat = $listSortieType['etat']->getData();
+            $criteresUserId = $user->getId();
+
+
+
+            if ($criteresCampus != null) {
+                $criteresCampus = $campusRepository->find($criteresCampus)->getId();
+            }
+
+            if ($criteresDateMin instanceof \DateTime) {
+                $criteresDateMin = $criteresDateMin->format('Y-m-d');
+            }
+
+            if ($criteresDateMax instanceof \DateTime) {
+                $criteresDateMax = $criteresDateMax->format('Y-m-d');
+            }
+
+            if($criteresEtat == true) {
+                $criteresEtat = 5;
+            }
+
+            $criteres  = [
+                'campus_id' => $criteresCampus,
+                'nom' => $criteresNom,
+                'date_min' => $criteresDateMin,
+                'date_max' => $criteresDateMax,
+                'user_id' => $criteresUserId,
+                'organisateur' => $criteresOrganisateur,
+                'etat_id' => $criteresEtat,
+                'isInscrit' => $criteresIsInscrit,
+                'isNotInscrit' => $criteresIsNotInscrit
+            ];
+
+            $sorties = $sortieRepository->findByCriteres($criteres);
+
+        } else {
+
+
+        }
+
+
+
+
+       
+
+        //dump($request);
+        dump($sorties);
+
+
+        return $this->render('sortie/listeSorties.html.twig', [
+            'sorties' => $sorties,
+            'sortiesDefaultList' => $sortiesDefaultList,
+            //'sortiesInscrits' => $sortiesInscrits,
+            'user' => $user,
+            'userName' => $userName,
+            'criteres' => $criteres,
+            'listSortieType' => $listSortieType->createView()
+        ]);
+    }
 }
+

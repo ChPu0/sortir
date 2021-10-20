@@ -5,27 +5,25 @@
 {% endblock %}
 
 {% block body %}
-    {% for i in 0..3 %}
-        <h2 style="color: crimson; text-align: center">ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR</h2>
-    {% endfor %}
-        <h1 style="text-align: center">X The Death page X</h1>
-        <pre>                                                                                     ______
-                                                                                  .-"      "-.
-                                                                                 /            \
-                                                                     _          |              |          _
-                                                                    ( \         |,  .-.  .-.  ,|         / )
-                                                                     > "=._     | )(__/  \__)( |     _.=" <
-                                                                    (_/"=._"=._ |/     /\     \| _.="_.="\_)
-                                                                           "=._ (_     ^^     _)"_.="
-                                                                               "=\__|IIIIII|__/="
-                                                                              _.="| \IIIIII/ |"=._
-                                                                    _     _.="_.="\          /"=._"=._     _
-                                                                   ( \_.="_.="     `--------`     "=._"=._/ )
-                                                                    > _.="                            "=._ <
-                                                                   (_/                                    \_)</pre>
+    <h2 style="text-align: center">Si vous etes arrivés ici, c'est que vous avez fait fausse route</h2>
+    <a href="{{ path('profil_create') }}"><button class="btn btn-primary btn-lg btn-block">Ramene moi en lieu sûr</button></a>
+        <pre>                                                   ______
+                                                .-"      "-.
+                                               /            \
+                                   _          |              |          _
+                                  ( \         |,  .-.  .-.  ,|         / )
+                                   > "=._     | )(__/  \__)( |     _.=" <
+                                  (_/"=._"=._ |/     /\     \| _.="_.="\_)
+                                         "=._ (_     ^^     _)"_.="
+                                             "=\__|IIIIII|__/="
+                                            _.="| \IIIIII/ |"=._
+                                  _     _.="_.="\          /"=._"=._     _
+                                 ( \_.="_.="     `--------`     "=._"=._/ )
+                                  > _.="                            "=._ <
+                                 (_/                                    \_)</pre>
 
-        <h1 style="text-align: center">Si vous etes arrivés ici, c'est que vous avez fait fausse route</h1>
+
     {% for i in 0..3 %}
-        <h2 style="color: crimson; text-align: center">ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR</h2>
+        <p style="color: crimson; text-align: center">ERROR - ERROR - ERROR - ERROR - ERROR - ERROR</p>
     {% endfor %}
 {% endblock %}

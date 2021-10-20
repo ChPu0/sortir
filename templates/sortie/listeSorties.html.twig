@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Liste
+{% endblock %}
+
+{% block body %}
+
+    <section class="date-user">
+        <div class="text-right font-weight-bold">
+            Date du jour : {{ "now" | date('d/m/Y') }}
+            <br/>
+            Participant : {{ userName }}
+            {{ user.id }}
+            <br />
+            {{ criteres | join(',') }}
+            <br />
+            {{ sorties | length }}
+        </div>
+    </section>
+
+    <section class="m-auto">
+        {{ form_start(listSortieType) }}
+
+        <div class="form-group">
+            <label for="" class="fw-bold mb-4">Filtrer les sorties</label>
+        </div>
+        <div class="row w-100 m-auto">
+            <div class="col-5">
+
+                <div class="form-group d-flex">
+                    <label for="nom">Campus : </label>
+                    <div>
+                        {{ form_widget(listSortieType.campus) }}
+                    </div>
+                </div>
+
+                <div class="form-group d-flex">
+                    <label for="nom">Le nom de la sortie contient : </label>
+                    {{ form_widget(listSortieType.nom) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="">Entre : </label>
+                    {{ form_widget(listSortieType.dateHeureMin) }}
+                </div>
+                <div class="form-group">
+                    <label for="">Et : </label>
+                    {{ form_widget(listSortieType.dateHeureMax) }}
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="form-group">
+                    {{ form_widget(listSortieType.organisateur) }}
+                    {{ form_label(listSortieType.organisateur) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_widget(listSortieType.isInscrit) }}
+                    <label for="isInscrit">Sorties auxquelles je suis inscrit/e</label>
+                </div>
+
+                <div class="form-group">
+                    {{ form_widget(listSortieType.isNotInscrit) }}
+                    <label for="isInscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
+                </div>
+
+                <div class="form-group">
+                    {{ form_widget(listSortieType.etat) }}
+                    {{ form_label(listSortieType.etat) }}
+                </div>
+            </div>
+
+            <div class="col-2">
+                {{ form_widget(listSortieType.rechercher) }}
+            </div>
+
+
+                {{ form_end(listSortieType) }}
+
+        </div>
+    </section>
+
+    <section>
+        <div class="liste-container">
+            <table class="table table-striped table-liste-sorties">
+                <thead>
+                    <tr>
+                        <th scope="col">Nom de la sortie</th>
+                        <th scope="col">Date de la sortie</th>
+                        <th scope="col">Clôture</th>
+                        <th scope="col">inscrits/places</th>
+                        <th scope="col">Etat</th>
+                        <th scope="col">Inscrit</th>
+                        <th scope="col">Organisateur</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% if sorties | length > 0 %}
+                {% for sortie in sorties %}
+                    <tr>
+                        <th scope="row">{{ sortie.nom }}</th>
+                        <td>
+
+                            {{ sortie.getDateHeureDebut | date('d/m/Y') }}
+                        </td>
+                        <td>{{ sortie.dateLimiteInscription | date('d/m/Y', 'Europe/Paris') }}</td>
+                        <td>{{ sortie.inscrits | length }} / {{ sortie.nbInscriptionsMax }}</td>
+                        <td>{{ sortie.etat.libelle }}</td>
+                        <td>inscrit ? X</td>
+                        <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
+                        <td>Actions : Conditions</td>
+
+                    </tr>
+
+                    {% else %}
+                        <p>Pas de sorties enregistrées pour le moment</p>
+                {% endfor %}
+                {% else %}
+                {% for sortieDefault in sortiesDefaultList %}
+                    <tr>
+                        <th scope="row">{{ sortieDefault.nom }}</th>
+                        <td>
+
+                            {{ sortieDefault.getDateHeureDebut | date('d/m/Y') }}
+                        </td>
+                        <td>{{ sortieDefault.dateLimiteInscription | date('d/m/Y', 'Europe/Paris') }}</td>
+                        <td>{{ sortieDefault.inscrits | length }} / {{ sortieDefault.nbInscriptionsMax }}</td>
+                        <td>{{ sortieDefault.etat.libelle }}</td>
+                        <td>inscrit ? X</td>
+                        <td>{{ sortieDefault.organisateur.nom }} {{ sortieDefault.organisateur.prenom }}</td>
+                        <td>
+                            {% if ((sortie.etat == 'En cours')) and (criteres['isInscrit']) %}
+                                <a href="#">Afficher</a>
+
+                            {% elseif ((sortie.etat == 'En création') and (criteres['organisateur'])) %}
+                                <a href="#">Modifier</a> <a>Publier</a>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+
+                {% else %}
+                    <p>Pas de sorties enregistrées pour le moment</p>
+                {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <div class="btn btn-success p-3 border border-dark btn-create-sortie">
+            <a href="#" title="Aller vers la page de création de sortie">
+                Créer une sortie
+            </a>
+        </div>
+    </section>
+
+
+{% endblock %}

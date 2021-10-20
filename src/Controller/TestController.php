@@ -20,7 +20,6 @@ class TestController extends AbstractController
      */
     public function index(SortieRepository $sortieRepository): Response
     {
-
         $sorties = $sortieRepository->findAll();
 
         return $this->render('test/index.html.twig', [
@@ -34,6 +33,8 @@ class TestController extends AbstractController
     public function ajouterParticipant(int $id, SortieRepository $sortieRepository, ParticipantRepository $participantRepository,Request $request, EntityManagerInterface $entityManager)
     {
         $sortie = $sortieRepository->find($id);
+        $today = new \DateTime('now');
+
 
         //Si la sortie n'est pas trouvée ou si elle est complète
         if(!$sortie ||
@@ -43,10 +44,17 @@ class TestController extends AbstractController
                 'test_index'
                 #TODO=Route à définir
             );
+            //Si la date d'inscription est dépassée
+        } else if($today >= $sortie->getDateLimiteInscription()) {
+            $this->addFlash('error', "Impossible de s'inscrire, la date d'inscription est dépassée");
+            return $this->redirectToRoute(
+                'test'
+            #TODO=Route à définir
+            );
         }
 
         //On récupère le participant qui souhaite s'inscrire
-        $participant = $request->getSession()->get('user');
+        $participant = $this->getUser();
         $participant = $participantRepository->find($participant->getId());
 
         //On vérifie s'il est déjà inscrit

@@ -1,0 +1,42 @@
+body {
+    width: 100vw;
+    padding: 5vw;
+    margin: auto;
+}
+
+section {
+    margin: auto;
+}
+
+section.date-user {
+    width : 80vw;
+    display: flex;
+    justify-content: end;
+    margin: 2vh 0;
+}
+
+div.liste-container {
+    border: 2px solid black;
+    margin: 10vh auto 2vh auto;
+    overflow-scrolling: auto;
+    max-height: 95vh;
+}
+
+table.table-liste-sorties {
+    /*margin: 20vh auto 2vh auto;*/
+    overflow: scroll;
+    max-height: 95vh;
+}
+
+div.btn-create-sortie {
+    border-bottom: 3px black solid !important;
+    border-right: 3px black solid !important;
+    padding-left: 2vw !important;
+    padding-right: 2vw !important;
+}
+
+div.btn-create-sortie>a {
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+}

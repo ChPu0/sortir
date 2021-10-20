@@ -4,15 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Form\ProfilType;
+use App\Repository\CampusRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use League\Csv\Exception;
+use League\Csv\Reader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProfilController extends AbstractController
 {
@@ -40,16 +44,12 @@ class ProfilController extends AbstractController
     public function create(
         EntityManagerInterface $entityManager,
         Request $request,
-        UserPasswordHasherInterface $passwordHasher,
         SluggerInterface $slugger) {
 
         //Formulaire de saisie d'un profil User
             $participant = new Participant();
 
             //todo Definition des infos par défaut
-            $participant->setRoles(["ROLE_USER"]);
-            //$participant->setActif(true);
-            //$participant->setAdministrateur(false);
             $participant->setImgProfil('avatar.png');
 
             $profilForm = $this->createForm(ProfilType::class, $participant);
@@ -88,9 +88,6 @@ class ProfilController extends AbstractController
                     $participant->setImgProfil($newFilename);
                 }
 
-
-
-
                 $entityManager->persist($participant);
                 $entityManager->flush();
 
@@ -114,7 +111,8 @@ class ProfilController extends AbstractController
 
         $participant = $participantRepository->find($id);
         if(!$participant) {
-            throw $this->createNotFoundException('Participant inexistant');
+            $this->addFlash('error', "Ce membre n'existe pas");
+            return $this->render('error/error.html.twig');
         }
         return $this->render('profil/showProfil.html.twig', ["participant" => $participant]);
     }
@@ -175,10 +173,11 @@ class ProfilController extends AbstractController
 
         $this->addFlash('succes', "Profil mis à jour !");
 
+        //todo modifier la page de redirection à la validation du formulaire
         return $this->redirectToRoute('profil_show', ["id" => $participant->getId()]);
     }
 
-        return $this->render('profil/createProfil.html.twig', ["profilForm" => $profilForm->createView()]);
+        return $this->render('profil/createProfil.html.twig', ["profilForm" => $profilForm->createView(), "img" =>$participant->getImgProfil()]);
     }
 
 
@@ -204,15 +203,89 @@ class ProfilController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('succes', "Vous vous etes désinscrit !");
+
+            //todo modifier la page de redirection à la validation du formulaire
             return $this->redirectToRoute('profil_show', ["id" => $connectedUserId]);
         }
         else {
-            //todo prevoir une page d'erreur
             $this->addFlash('error', "Cette activité n'existe pas");
-            return $this->render('test/index.html.twig');
-
+            return $this->render('error/error.index.html.twig');
         }
 
+    }
+
+    /**
+     * @Route("/profil/add/csv", name="profil_csv")
+     * @throws Exception
+     */
+    public function ajouterParticipantCSV(Request $request,
+                                          EntityManagerInterface $entityManager,
+                                          ParticipantRepository $participantRepository,
+                                          ValidatorInterface $validator,
+                                          CampusRepository $campusRepository){
+
+        //Si le fichier a été ajouté
+        if ($request->isMethod('POST'))
+        {
+            //On récupère les données du fichier csv en indiquant les en-têtes
+            $csv = Reader::createfromPath($request->files->get('csvFile')->getRealPath())
+                ->setHeaderOffset(0);
+            $i = 0;
+            //On récupère l'encodeur pour hasher les mots de passe
+            $encoder = $this->passwordHasher;
+
+            //Pour chaque ligne de notre fichier, on crée un utilisateur
+            foreach($csv as $record){
+                $i++;
+                $participant = new Participant();
+
+                //On vérifie qu'il n'existe pas déjà
+                if($participantRepository->findOneBy(["email" => $record['email']]) === null ){
+                    //On ajoute les valeurs de base au participant
+                    $participant->setEmail($record['email']);
+                    $participant->setNom($record['nom']);
+                    $participant->setPrenom($record['prenom']);
+                    $participant->setPassword($encoder->hashPassword($participant, $record['password']));
+                    $participant->setTelephone($record['telephone']);
+                    $participant->setActif($record['actif']);
+
+                    //Le pseudo par défaut sera l'adresse email
+                    $participant->setPseudo($record['email']);
+
+                    //On met une image de profil par défaut
+                    $participant->setImgProfil('avatar.png');
+
+                    //On vérifie si c'est un administrateur
+                    if($record['administrateur'] === 'false' || $record['administrateur'] === 'non'){
+                        $participant->setAdministrateur(false);
+                        $participant->setRoles(["ROLE_USER"]);
+                    } else {
+                        $participant->setAdministrateur($record['administrateur']);
+                        $participant->setRoles(["ROLE_ADMIN"]);
+                    }
+
+                    //On va chercher le campus pour le rajouter
+                    $campus = $campusRepository->findOneBy(['nom' => $record['campus']]);
+                    $participant->setCampus($campus);
+
+                    //On va le participant et renvoyer une erreur s'il n'est pas valide
+                    $errors = $validator->validate($participant);
+                    if($errors->count() > 0){
+                        $this->addFlash('error', "Erreur ligne " . $i . " : des contraintes ne sont pas respectées. Cet utilisateur ne sera pas ajouté à la base de données.");
+                    } else {
+                        //S'il n'y a pas d'erreur de validation, on peut l'envoyer à la base de données
+                        $entityManager->persist($participant);
+                    }
+                } else {
+                    $this->addFlash('error', "Erreur ligne " . $i . " : cet email existe déjà");
+                }
+
+            }
+            $entityManager->flush();
+        }
+
+        //Renvoie vers le formulaire d'ajout d'un fichier CSV
+        return $this->render('csv/uploadCSV.html.twig');
     }
 
 }
