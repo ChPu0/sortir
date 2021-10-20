@@ -63,7 +63,7 @@ class SortieRepository extends ServiceEntityRepository
     public function findByOrganisateur($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere('s.organisateur = ' . $criteres['organisateur']);
+        $queryBuilder->andWhere('s.organisateur = ' . $criteres['user_id']);
         $query = $queryBuilder->getQuery();
 
         $paginator = new Paginator($query);
@@ -97,11 +97,11 @@ class SortieRepository extends ServiceEntityRepository
     public function findByEtatMaxOneMonth($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere('s.etat = ' . $criteres['etat'])
-                        ->andWhere(s.date_heure_debut < NOW() AND DATEDIFF(NOW(), s.date_heure_debut) <= 30);
+        $queryBuilder->andWhere('s.etat = ' . $criteres['etat_id'])
+                        ->andWhere('s.date_heure_debut < NOW()')
+                        ->andWhere('(s.date_heure_debut - 30) >= NOW()');
         $query = $queryBuilder->getQuery();
 
-        $query->setMaxResults(30);
         $paginator = new Paginator($query);
         return $paginator;
     }

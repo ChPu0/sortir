@@ -301,10 +301,15 @@ class SortieController extends AbstractController
                 'isNotInscrit' => $criteresIsNotInscrit
             ];
 
-            //$sorties = $sortieRepository->findByIsInscrit($criteres);
-            //$sorties = $sortieRepository->findByCampus($criteres);
+            //$sorties = $sortieRepository->findByIsInscrit($criteres); //OK
+            //$sorties = $sortieRepository->findByCampus($criteres); //OK
             //$sorties = $sortieRepository->findByDate($criteres); //Ne fonctionne pas : dates SQL
-            $sorties = $sortieRepository->findByName($criteres);
+            //$sorties = $sortieRepository->findByName($criteres); //OK
+            //$sorties = $sortieRepository->findByOrganisateur($criteres); //OK
+            //$sorties = $sortieRepository->findByIsInscrit($criteres); //OK
+            //$sorties = $sortieRepository->findByEtatMaxOneMonth($criteres); //Ne fonctionne pas : dates SQL + état ()entity ?
+            //$sorties = $sortieRepository->findByEtatMaxOneMonth($criteres); //Ne fonctionne pas : dates SQL + état ()entity ?
+
 
         } else {
 
