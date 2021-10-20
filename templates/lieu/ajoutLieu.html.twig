@@ -7,8 +7,7 @@
     {{ form_widget(lieuForm) }}
     <button class="btn btn-primary">Valider</button>
     {{ form_end(lieuForm) }}
-    {# todo retour à la page d'accueil #}
-    <a href="#"><button class="btn btn-light">Annuler</button></a>
+    <a href="{{ path('lieu_affichage') }}"><button class="btn btn-light">Annuler</button></a>
 {% endblock %}
 
 {% block title %}
