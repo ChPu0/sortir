@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Profil</h1>
+    {{ form_start(profilForm) }}
+    {{ form_widget(profilForm) }}
+    {% if img|default(null) %}
+    <img class="miniature" src="{{ asset('img/'~img ) }}">
+    {% endif %}
+    <br/>
+    <button class="btn btn-primary">Valider</button>
+    {{ form_end(profilForm) }}
+    <a href="{{ path('sortie_liste') }}"><button class="btn btn-light">Annuler</button></a>
+
+{% endblock %}
+
+{% block title %}
+Profil | {{ parent() }}
+{% endblock %}
+
