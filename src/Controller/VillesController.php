@@ -16,13 +16,13 @@ class VillesController extends AbstractController
     private $villesListe = null;
 
     /**
-     * @Route("/villes", name="villes")
+     * @Route("/villes", name="list_villes")
      */
     public function list(Request $request, EntityManagerInterface $em)
     {
         $this->villesListe = $em->getRepository(Ville::class)->findAll();
 
-        return $this->render('villes/index.html.twig', [
+        return $this->render('villes/list.html.twig', [
             'page_name' => 'Villes',
             'villes' => $this-> villesListe
         ]);
@@ -41,7 +41,7 @@ class VillesController extends AbstractController
             $em->persist($ville);
             $em->flush();
             $this->addFlash('success', 'La ville a bien été ajoutée !');
-            return $this->redirectToRoute('villes');
+            return $this->redirectToRoute('list_villes');
         }
 
         return $this->render('villes/add.html.twig', [
@@ -74,7 +74,7 @@ class VillesController extends AbstractController
 
             $this->villesListe = $em->getRepository(Ville::class)->findAll();
 
-            return $this->redirectToRoute('villes');
+            return $this->redirectToRoute('list_villes');
         }
 
         return $this->render('villes/edit.html.twig', [
@@ -95,7 +95,7 @@ class VillesController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'La ville a été supprimée.');
 
-        return $this->redirectToRoute('villes');
+        return $this->redirectToRoute('list_villes');
     }
 
 

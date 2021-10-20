@@ -8,6 +8,7 @@ use App\Repository\LieuRepository;
 use App\Services\CallAPI;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,7 +38,7 @@ class LieuController extends AbstractController
     }
 
     /**
-     * @Route("/lieu/modifier", name="lieu_affichage")
+     * @Route("/lieu/afficher", name="lieu_affichage")
      */
     public function affichage(LieuRepository $lieuRepository): Response
     {
@@ -61,9 +62,41 @@ class LieuController extends AbstractController
 
         $this->addFlash('succes', "Lieu supprimé !");
 
-        //todo modifier la page de redirection à la validation du formulaire
         return $this->redirectToRoute('lieu_affichage', ["id" => $lieu->getId()]);
     }
 
+    /**
+     * @Route("/lieu/editer/{id}", name="lieu_edit")
+     */
+    public function edit(Lieu $lieu, Request $request, EntityManagerInterface $em)
+    {
+        $form = $this->createForm(LieuType::class, $lieu);
+        $form->remove('send');
+        $form->add('send',SubmitType::class, [
+            'label' => 'Modifier',
+            'attr' => [
+                'class' => 'btn btn-primary w-100'
+            ]
+        ]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $lieu = $form->getData();
+
+            $em->persist($lieu);
+            $em->flush();
+            $this->addFlash('success', 'Le lieu a été modifié !');
+
+            $this->lieuxListe = $em->getRepository(Lieu::class)->findAll();
+
+            return $this->redirectToRoute('lieu_affichage');
+        }
+
+        return $this->render('lieu/edition.html.twig', [
+            'page_name' => 'Edition Lieu',
+            'lieu' => $lieu,
+            'form' => $form->createView()
+        ]);
+    }
 
 }

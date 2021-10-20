@@ -11,12 +11,8 @@
         {{ form_errors(form) }}
         {{ form_widget(form) }}
 
-
-
-        <a href="{{ path('main_home') }}"><input type="button" value="Annuler"/></a>
-        <button type="submit">Ajouter ville</button>
-
-        <i class ='btn btn-primary w-1950'><a href="{{ path('sortie_add') }}"><input type="button"  value="Retour sur créé une sortie"></a></i>
+        <a href="{{ path('list_villes') }}"><input type="button" class="btn btn-light" value="Annuler"/></a>
+        <button type="submit" class="btn btn-primary">Ajouter ville</button>
 
         {{ form_end(form) }}
 

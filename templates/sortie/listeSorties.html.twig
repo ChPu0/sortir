@@ -11,10 +11,7 @@
             Date du jour : {{ "now" | date('d/m/Y') }}
             <br/>
             Participant : {{ userName }}
-            {{ user.id }}
-            <br />
-            {{ criteres | join(',') }}
-            <br />
+
         </div>
     </section>
 
@@ -60,6 +57,7 @@
 
                 <div class="form-group">
                     {{ form_widget(listSortieType.isNotInscrit) }}
+
                 </div>
 
                 <div class="form-group">
@@ -104,9 +102,10 @@
                         <td>{{ sortie.dateLimiteInscription | date('d/m/Y', 'Europe/Paris') }}</td>
                         <td>{{ sortie.inscrits | length }} / {{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
-                        <td>{% if (criteres != null and criteres['isInscrit']) %}
-                            X
-                            {% endif %}</td>
+                        <td>{% if(sortie.getInscrits.contains(user)) %}
+                                <p>X</p>
+                        {% endif %}</td>
+
                         <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
                         <td>Actions : Conditions</td>
 

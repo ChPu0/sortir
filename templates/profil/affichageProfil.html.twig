@@ -23,13 +23,13 @@
                 {% set id = membre.id %}
                 <td><a href="{{ path('profil_amend',{'id':membre.id}) }}"><input type="button" value="Modifier" class="btn btn-sm btn-outline-success"></a></td>
                 {% if membre.actif == true%}
-                    <td><a href="{{ path('user_desactiver',{'id':membre.id}) }}"><input type="button" value="Désactiver" class="btn btn-sm btn-outline-warning"></a></td>
+                    <td><a href="{{ path('profil_desactiver',{'id':membre.id}) }}"><input type="button" value="Désactiver" class="btn btn-sm btn-outline-warning"></a></td>
                 {% else %}
-                     <td><a href="{{ path('user_reactiver',{'id':membre.id}) }}"><input type="button" value="Réactiver" class="btn btn-sm btn-outline-info"></a></td>
+                     <td><a href="{{ path('profil_reactiver',{'id':membre.id}) }}"><input type="button" value="Réactiver" class="btn btn-sm btn-outline-info"></a></td>
                 {% endif %}
 
                 <td>
-                    <a href="{{ path('user_supprimer',{'id':membre.id}) }}"><input type="button" value="Supprimer" class="btn btn-sm btn-outline-danger"></a>
+                    <a href="{{ path('profil_supprimer',{'id':membre.id}) }}"><input type="button" value="Supprimer" class="btn btn-sm btn-outline-danger"></a>
 
 {# -- UTILISATION D'UNE MODALE -- NE FONCTIONNE PAS
                     <input type="button" class="btn btn-primary" value="Supprimer" onclick="displayHide()">
