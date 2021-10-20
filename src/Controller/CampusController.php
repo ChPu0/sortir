@@ -59,7 +59,7 @@ class CampusController extends AbstractController
         $form->add('submit',SubmitType::class, [
             'label' => 'Modifier',
             'attr' => [
-                'class' => 'btn btn-primary w-100'
+                'class' => 'btn btn-outline-primary'
             ]
         ]);
         $form->handleRequest($request);

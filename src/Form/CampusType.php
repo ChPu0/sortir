@@ -18,7 +18,7 @@ class CampusType extends AbstractType
             ->add('submit',SubmitType::class, [
                 'label' => 'Ajouter',
                 'attr' => [
-                    'class' => 'btn btn-primary w-100'
+                    'class' => 'btn btn-outline-primary'
                 ]
             ])
         ;
