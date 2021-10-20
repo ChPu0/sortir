@@ -15,7 +15,6 @@
             <br />
             {{ criteres | join(',') }}
             <br />
-            {{ sorties | length }}
         </div>
     </section>
 
@@ -57,12 +56,10 @@
 
                 <div class="form-group">
                     {{ form_widget(listSortieType.isInscrit) }}
-                    <label for="isInscrit">Sorties auxquelles je suis inscrit/e</label>
                 </div>
 
                 <div class="form-group">
                     {{ form_widget(listSortieType.isNotInscrit) }}
-                    <label for="isNotInscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
                 </div>
 
                 <div class="form-group">
@@ -107,7 +104,9 @@
                         <td>{{ sortie.dateLimiteInscription | date('d/m/Y', 'Europe/Paris') }}</td>
                         <td>{{ sortie.inscrits | length }} / {{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
-                        <td>inscrit ? X</td>
+                        <td>{%  if criteres['isInscrit'] %}
+                            X
+                            {% endif %}</td>
                         <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
                         <td>Actions : Conditions</td>
 

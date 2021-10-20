@@ -20,7 +20,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
+/**
+ * @Route("/sortie", name="sortie_")
+ */
 class SortieController extends AbstractController
 {
     /**
@@ -232,7 +234,7 @@ class SortieController extends AbstractController
 
 
     /**
-     * @Route("/sortie/liste", name="sortie_liste")
+     * @Route("/liste", name="liste")
      * @param EntityManagerInterface $entityManager
      * @param SortieRepository $sortieRepository
      * @return Response
@@ -299,7 +301,9 @@ class SortieController extends AbstractController
                 'isNotInscrit' => $criteresIsNotInscrit
             ];
 
-            $sorties = $sortieRepository->findByCriteres($criteres);
+            //$sorties = $sortieRepository->findByIsInscrit($criteres);
+            //$sorties = $sortieRepository->findByCampus($criteres);
+            $sorties = $sortieRepository->findByDate($criteres);
 
         } else {
 
