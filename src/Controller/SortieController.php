@@ -233,7 +233,7 @@ class SortieController extends AbstractController
     }
 
 
-
+    /**
      * @Route("/liste", name="liste")
      * @param EntityManagerInterface $entityManager
      * @param SortieRepository $sortieRepository
@@ -301,7 +301,9 @@ class SortieController extends AbstractController
                 'isNotInscrit' => $criteresIsNotInscrit
             ];
 
-            $sorties = $sortieRepository->findByCriteres($criteres);
+            //$sorties = $sortieRepository->findByIsInscrit($criteres);
+            //$sorties = $sortieRepository->findByCampus($criteres);
+            $sorties = $sortieRepository->findByDate($criteres);
 
         } else {
 
