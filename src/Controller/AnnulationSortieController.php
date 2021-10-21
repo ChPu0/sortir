@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\AnnulationType;
+use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +18,8 @@ class AnnulationSortieController extends AbstractController
     /**
      * @Route("/annulation/sortie/{id}", name="annulation_sortie")
      */
-    public function annulation(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, Request $request): Response
+    public function annulation(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, Request $request,
+                                    EtatRepository $etatRepository): Response
     {
         $aujourdhui = new \DateTime('now');
         //Récupere la sortie à annuler
@@ -33,18 +35,19 @@ class AnnulationSortieController extends AbstractController
             return $this->render('error/error.html.twig');
         }
         else {
-            //Modiife l'état de la sortie
-            $sortieSelected->getEtat()->setLibelle("Annulé");
             //Crée le formulaire de Motif d'annulation
             $annulationForm = $this->createForm(AnnulationType::class, $sortieSelected);
             $annulationForm->handleRequest($request);
 
             if ($annulationForm->isSubmitted() && $annulationForm->isValid()) {
-                $entityManager->persist($sortieSelected);
+                //Modiife l'état de la sortie
+                $sortieSelected->setEtat($etatRepository->find(6));
                 $entityManager->flush();
 
                 $this->addFlash('succes', 'Sortie annulée');
                 //todo ajouter une page de redirection à la validation du formulaire
+
+                return $this->redirectToRoute('sortie_liste');
             }
         }
         return $this->render('annulation_sortie/annulation.html.twig',  ["sortie"=>$sortieSelected, "annulationForm"=>$annulationForm->createView()]);

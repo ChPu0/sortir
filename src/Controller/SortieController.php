@@ -137,10 +137,10 @@ class SortieController extends AbstractController
                 $etat = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
                 $sortie->setEtat($etat);
             }elseif ($form->get('Annuler')->isClicked()){
-                return $this->redirectToRoute('sortie');
+                return $this->redirectToRoute('sortie_liste');
 
             }else{
-                return $this->redirectToRoute('sortie');
+                return $this->redirectToRoute('sortie_liste');
             }
 
             $em->persist($sortie);
@@ -149,7 +149,7 @@ class SortieController extends AbstractController
 
             $this->sortiesListe = $em->getRepository(Sortie::class)->findAll();
 
-            return $this->redirectToRoute('sortie');
+            return $this->redirectToRoute('sortie_liste');
         }
 
         return $this->render('sortie/edit.html.twig', [
@@ -213,10 +213,10 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('sortie_add_participant');
     }
 
-    /**
+    /*/**
      * @Route("/sortie/annuler/{id}", name="annuler_sortie")
      */
-    public function annuler_sortie(Request $request, EntityManagerInterface $em, Sortie $sortie){
+    /*public function annuler_sortie(Request $request, EntityManagerInterface $em, Sortie $sortie){
 
         $participant = $this->getUser();
 
@@ -240,7 +240,7 @@ class SortieController extends AbstractController
             'participants' => $participant,
             'form' => $form->createView()
         ]);
-    }
+    }*/
 
 
     /**
@@ -256,13 +256,20 @@ class SortieController extends AbstractController
                                 CampusRepository $campusRepository) : Response
     {
 
-        //$sortiesInscrits = $sortieRepository->findByIsInscrit(1);
-
         $user = $participantRepository->find($this->getUser()->getId());
-        $userName = $user->getPrenom() . " " . $user->getNom()[0] . ".";
-        $criteres = [];
-        $sorties = $sortieRepository->findAll();
-        $sortiesDefaultList = $sortieRepository->findAll();
+        //$userName = $user->getPrenom() . " " . $user->getNom()[0] . ".";
+        $campusDefault = $campusRepository->find($user->getCampus()->getId());
+        $criteres = ["campus_id" => $user->getCampus()->getId(),
+                      "nom" => '',
+                      "date_min" => "1800-01-01",
+                      "date_max" => "2999-12-31",
+                      "user_id" => $user->getId(),
+                      "organisateur" => true,
+                      "etat_id" => false,
+                      "isInscrit" => true,
+                      "isNotInscrit" => true];
+
+        $sorties = $sortieRepository->findByCriteres($criteres);
 
         $listSortieType = $this->createForm(ListSortieType::class);
 
@@ -323,34 +330,126 @@ class SortieController extends AbstractController
                 'isNotInscrit' => $criteresIsNotInscrit
             ];
 
-
+            //dd($criteres);
             $sorties = $sortieRepository->findByCriteres($criteres);
             //dd($sorties);
 
 
         } else {
 
-
         }
-
-
-
-
-       
 
         //dump($request);
         dump($sorties);
 
-
         return $this->render('sortie/listeSorties.html.twig', [
             'sorties' => $sorties,
-            'sortiesDefaultList' => $sortiesDefaultList,
             //'sortiesInscrits' => $sortiesInscrits,
+            'campus' => $campusDefault,
             'user' => $user,
-            'userName' => $userName,
             'criteres' => $criteres,
             'listSortieType' => $listSortieType->createView()
         ]);
+    }
+
+    /**
+     * @Route("/editEtat/{id}", name="editEtat")
+     * @param int $id
+     */
+    public function editEtat(int $id, SortieRepository $sortieRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager) {
+
+        $sortie = $sortieRepository->find($id);
+
+        $sortie->setEtat($etatRepository->find(2));
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('sortie_liste');
+
+    }
+
+    /**
+     * @Route("/desinscription/{id}", name="desinscription")
+     */
+    //------------------------------------
+    //Retirer un utilisateur d'une sortie
+    //-----------------------------------
+    public function desinscription(int $id, EntityManagerInterface $entityManager,SortieRepository $sortieRepository, ParticipantRepository $participantRepository) {
+        $connectedUser = $this->getUser();
+        $connectedUserId = $connectedUser->getId();
+
+        $selectedUser = $participantRepository->find($connectedUserId);
+        $selectedSortie = $sortieRepository->find($id);
+
+        if($selectedSortie != null) {
+
+            $selectedUser->getSorties()->removeElement($selectedSortie);
+            $selectedSortie->getInscrits()->removeElement($selectedUser);
+
+            $entityManager->flush();
+
+            $this->addFlash('succes', "Vous vous etes désinscrit !");
+
+            //todo modifier la page de redirection à la validation du formulaire
+            return $this->redirectToRoute('sortie_liste');
+
+
+        }
+        else {
+            $this->addFlash('error', "Cette activité n'existe pas");
+            return $this->render('error/error.list.html.twig');
+        }
+
+        //$this->render('sortie/listeSorties.html.twig');
+
+
+    }
+
+    /**
+     * @Route("/add/{id}", name="sortie_add_participant")
+     */
+    public function ajouterParticipant(int $id, SortieRepository $sortieRepository, ParticipantRepository $participantRepository,Request $request, EntityManagerInterface $entityManager)
+    {
+        $sortie = $sortieRepository->find($id);
+        $today = new \DateTime('now');
+
+
+        //Si la sortie n'est pas trouvée ou si elle est complète
+        if(!$sortie ||
+            ($sortie->getInscrits()->count() == $sortie->getNbInscriptionsMax() && $sortie->getNbInscriptionsMax() != null)){
+            $this->addFlash('error', "La sortie n'existe plus ou est complète");
+            return $this->redirectToRoute(
+                'sortie_liste'
+            );
+            //Si la date d'inscription est dépassée
+        } else if($today >= $sortie->getDateLimiteInscription()) {
+            $this->addFlash('error', "Impossible de s'inscrire, la date d'inscription est dépassée");
+            return $this->redirectToRoute(
+                'sortie_liste'
+            );
+        }
+
+        //On récupère le participant qui souhaite s'inscrire
+        $participant = $this->getUser();
+        $participant = $participantRepository->find($participant->getId());
+
+        //On vérifie s'il est déjà inscrit
+        if($sortie->getInscrits()->contains($participant)){
+            $this->addFlash('error', "Vous êtes déjà inscrits à cette sortie");
+            return $this->redirectToRoute(
+                'sortie_liste'
+            );
+            //S'il n'est pas inscrit, on l'ajoute à la sortie
+        } else {
+            $sortie->addInscrit($participant);
+            $participant->addSorty($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', "Vous êtes inscrits à la sortie " . $sortie->getNom() . "!");
+            return $this->redirectToRoute(
+                'sortie_liste'
+            );
+        }
     }
 }
 

@@ -259,37 +259,7 @@ class ProfilController extends AbstractController
 
 
     //todo a adapter au formulaire d'Anaïs
-    /**
-     * @Route("/desinscription/{id}", name="profil_desinscription")
-     */
-    //------------------------------------
-    //Retirer un utilisateur d'une sortie
-    //-----------------------------------
-    public function desinscription(int $id, EntityManagerInterface $entityManager,SortieRepository $sortieRepository, ParticipantRepository $participantRepository) {
-        $connectedUser = $this->getUser();
-        $connectedUserId = $connectedUser->getId();
 
-        $selectedUser = $participantRepository->find($connectedUserId);
-        $selectedSortie = $sortieRepository->find($id);
-
-        if($selectedSortie != null) {
-
-            $selectedUser->getSorties()->removeElement($selectedSortie);
-            $selectedSortie->getInscrits()->removeElement($selectedUser);
-
-            $entityManager->flush();
-
-            $this->addFlash('succes', "Vous vous etes désinscrit !");
-
-            //todo modifier la page de redirection à la validation du formulaire
-            return $this->redirectToRoute('profil_show', ["id" => $connectedUserId]);
-        }
-        else {
-            $this->addFlash('error', "Cette activité n'existe pas");
-            return $this->render('error/error.list.html.twig');
-        }
-
-    }
 
     /**
      * @Route("/profil/add/csv/admin", name="profil_csv")

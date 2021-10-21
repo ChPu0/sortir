@@ -42,7 +42,8 @@ class SortieRepository extends ServiceEntityRepository
     public function findByName($criteres)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->andWhere('s.nom LIKE %' . $criteres['nom'] . '%');
+        $queryBuilder->andWhere('s.nom LIKE ?1');
+        $queryBuilder->setParameter(1, '%'.$criteres['nom'].'%');
         $query = $queryBuilder->getQuery();
 
         $paginator = new Paginator($query);
@@ -119,7 +120,7 @@ class SortieRepository extends ServiceEntityRepository
         $participantRepository = $em->getRepository(Participant::class);
         $sortieRepository = $em->getRepository(Sortie::class);
 
-        $criteres['nom'] = str_replace("'", "", $criteres['nom']) ;
+        //$criteres['nom'] = str_replace("'", "", $criteres['nom']) ;
 
         $queryBuilder = $this->createQueryBuilder('s');
         $queryBuilder->leftJoin('s.inscrits', 'sp');

@@ -52,8 +52,8 @@ class ModifySortieType extends AbstractType
             //->add('ville', EntityType::class, ['mapped' => false, 'class' => Ville::class, 'placeholder' => 'Choisir la ville ', 'choice_label' => 'nom'])
             //->add('rue', EntityType::class, ['class' => Lieu::class, 'mapped' => false, 'label' => 'Rue: ', 'choice_label' => 'rue', 'placeholder' => 'Choisir la rue',])
             //->add('codePostal', IntegerType::class, ['mapped' => false, 'label' => 'Code postal: '])
-            ->add('latitude', IntegerType::class, ['mapped' => false, 'label' => 'Latitude: '])
-            ->add('longitude', IntegerType::class, ['mapped' => false, 'label' => 'Longiture: '
+            ->add('latitude', IntegerType::class, ['mapped' => false, 'label' => 'Latitude: ', 'required' => false ])
+            ->add('longitude', IntegerType::class, ['mapped' => false, 'label' => 'Longiture: ', 'required' => false
             ])
 
             //Ajout des boutons de type SubmitTye + bootstrap

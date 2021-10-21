@@ -10,9 +10,9 @@
         <div class="text-right font-weight-bold">
             Date du jour : {{ "now" | date('d/m/Y') }}
             <br/>
-            Participant : {{ userName }}
-            <br>
-            Criteres : {{ criteres | join(' - ') }}
+            Participant : {{ app.user.pseudo }}
+            <br />
+
         </div>
     </section>
 
@@ -115,29 +115,34 @@
 
                         <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
                         <td>
-                            {# Sortie : user inscrit : #}
-                            {% if ((sortie.getInscrits.contains(user)) and (sortie.organisateur.id != user.id)) %}
-                                {# Sortie clôturée, passée ou annulée : #}
-                                {% if (sortie.etat.id == 3 or sortie.etat.id == 5 or sortie.etat.id == 6) %}
-                                    <a href="{{ path('sortie_afficher_sortie', {'id':sortie.id}) }}">Afficher</a>
+                            {# Sortie : user organisateur : #}
+                            {% if (sortie.organisateur.id != app.user.id) %}
+                                <a href="{{ path('sortie_afficher_sortie', {'id':sortie.id}) }}">Afficher</a>
 
+                                {% if(sortie.etat.id == 2) %}
+                                    {% if(sortie.getInscrits.contains(app.user)) %}
+                                        <a href="{{ path('sortie_desinscription', {'id': sortie.id}) }}">Se désister</a>
+                                    {% else %}
+                                        <a href="{{ path('sortie_add_participant', {'id': sortie.id}) }}">S'inscrire</a>
+                                    {% endif %}
                                 {% endif %}
+                            {# Sortie : non-organisateur : #}
+                            {% else %}
+                                {# Sortie en création :  #}
+                               {% if(sortie.etat.id == 1) %}
+                                   <a href="{{ path('sortie_modif_sortie', {'id': sortie.id}) }}">Modifier</a>
+                                   <a href="{{ path('sortie_editEtat', {'id': sortie.id}) }}">Publier</a>
 
-                            {# Sortie ouverte ou en cours : #}
-                                {% if (sortie.etat.id == 2 or sortie.etat.id == 4) %}
-                                    <a href="{{ path('profil_desinscription', {'id':user.id})}}">Se désister</a>
+                                   {% else %}
+                                       <a href="{{ path('sortie_afficher_sortie', {'id': sortie.id}) }}">Afficher</a>
 
-                                {% endif %}
-                                {# Sortie user = organisateur : #}
-                            {% elseif (sortie.organisateur.id == user.id) %}
-                                {# TODO : méthode set Etat sortie, vers Etat = "Ouverte" : #}
-                                <a href="{{ path('sortie_modif_sortie', {'id':sortie.id}) }}">Modifier</a>
-
-                                {% if (sortie.etat.id == 1) %}
-                                    <a href="#">Publier</a>
-                                {% endif %}
-
+                                       {% if(sortie.etat.id == 2) %}
+                                            <a href="{{ path('annulation_sortie', {'id': sortie.id}) }}">Annuler</a>
+                                       {% endif %}
+                               {% endif %}
                             {% endif %}
+
+
                         </td>
 
                     </tr>
