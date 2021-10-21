@@ -344,11 +344,13 @@ class ProfilController extends AbstractController
 
                     //On va chercher le campus pour le rajouter
                     $campus = $campusRepository->findOneBy(['nom' => $record['campus']]);
-                    $participant->setCampus($campus);
+                    if($campus != null) {
+                        $participant->setCampus($campus);
+                    }
 
                     //On va le participant et renvoyer une erreur s'il n'est pas valide
                     $errors = $validator->validate($participant);
-                    if($errors->count() > 0){
+                    if($errors->count() > 0 || $participant->getCampus() == null){
                         $this->addFlash('error', "Erreur ligne " . $i . " : des contraintes ne sont pas respectées. Cet utilisateur ne sera pas ajouté à la base de données.");
                     } else {
                         //S'il n'y a pas d'erreur de validation, on peut l'envoyer à la base de données
