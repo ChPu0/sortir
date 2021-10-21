@@ -16,6 +16,7 @@ use App\Form\SelectSortieType;
 use App\Form\TargetSortieType;
 use App\Repository\CampusRepository;
 use App\Repository\EtatRepository;
+use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use ContainerQM4dqw5\getCampusRepositoryService;
@@ -107,22 +108,35 @@ class SortieController extends AbstractController
     /**
      * @Route("/modifSortie/{id}", name="modif_sortie")
      */
-    public function modifSortie(Sortie $sortie, Request $request, EntityManagerInterface $em, EtatRepository $etatRepository)
+    public function modifSortie(Sortie $sortie,
+                                Request $request,
+                                EntityManagerInterface $em,
+                                EtatRepository $etatRepository,
+                                SortieRepository $sortieRepository,
+                                LieuRepository $lieuRepository)
     {
+
+        $sortie = $sortieRepository->find($sortie->getId());
+        $lieu = $lieuRepository->find($sortie->getLieu()->getId());
+        /*$sortie = new Sortie();
+        $lieu = new Lieu();
+        $formLieu = $this->createForm(LieuType::class, $lieu);
+        $formLieu->handleRequest();*/
+
         $form = $this->createForm(ModifySortieType::class, $sortie);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
             $sortie = $form->getData();
 
-            if( $form->get('save')->isSubmitted()){
+            if( $form->get('save')->isClicked()){
                 $etat = $etatRepository->findOneBy(['libelle'=>'Créée']);
                 $sortie->setEtat($etat);
 
-            }elseif( $form->get('publish')->isSubmitted()) {
+            }elseif( $form->get('publish')->isClicked()) {
                 $etat = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
                 $sortie->setEtat($etat);
-            }elseif ($form->get('Annuler')->isSubmitted()){
+            }elseif ($form->get('Annuler')->isClicked()){
                 return $this->redirectToRoute('sortie');
 
             }else{
@@ -141,6 +155,7 @@ class SortieController extends AbstractController
         return $this->render('sortie/edit.html.twig', [
             'page_name' => 'Modifier une sortie',
             'sortie' => $sortie,
+            'lieu' => $lieu,
             'form' => $form->createView()
         ]);
     }

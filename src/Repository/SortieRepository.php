@@ -118,7 +118,6 @@ class SortieRepository extends ServiceEntityRepository
         $etatRepository = $em->getRepository(Etat::class);
         $participantRepository = $em->getRepository(Participant::class);
 
-        $count = 1;
         $criteres['nom'] = str_replace("'", "", $criteres['nom']) ;
 
         $queryBuilder = $this->createQueryBuilder('s');
