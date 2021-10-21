@@ -70,7 +70,7 @@ class TestController extends AbstractController
             $participant->addSorty($sortie);
             $entityManager->flush();
 
-            $this->addFlash('success', "Vous êtes inscrits à la sortie " . $sortie->getNom() . "!");
+            $this->addFlash('succes', "Vous êtes inscrits à la sortie " . $sortie->getNom() . "!");
             return $this->redirectToRoute(
                 'test_index'
             #TODO=Route à définir

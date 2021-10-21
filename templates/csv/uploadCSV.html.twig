@@ -3,14 +3,16 @@
 {% block title %}Ajouter un fichier CSV{% endblock %}
 
 {% block body %}
-    <h1>Ajouter votre fichier CSV</h1>
-
+    <div class="jumbotron mt-2">
+        <h1 class="text-center display-4 lead">Ajouter votre fichier CSV</h1>
+    </div>
     <form method="POST" action="{{ path('profil_csv') }}" enctype="multipart/form-data">
-        <div>
+        <div class="bordure text-center">
             <label>Csv File</label>
             <input type="file" name="csvFile">
         </div>
-
-        <button type="submit">Upload</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-block w-100">Upload</button>
     </form>
+    <a href="{{ path('profil_affichage') }}"><button class="btn btn-dark btn-lg btn-block w-100">Annuler</button></a>
+
 {% endblock %}

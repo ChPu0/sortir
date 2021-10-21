@@ -107,7 +107,7 @@ class ListSortieType extends AbstractType
             ->add('rechercher', SubmitType::class, [
                 'attr' => [
                     'type' => "submit",
-                    'class' => "btn btn-success"
+                    'class' => "btn btn-outline-primary btn-lg"
                 ]
             ]);
     }

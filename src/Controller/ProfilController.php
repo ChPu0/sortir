@@ -184,10 +184,8 @@ class ProfilController extends AbstractController
 
         $this->addFlash('succes', "Profil mis à jour !");
 
-        //todo modifier la page de redirection à la validation du formulaire
         return $this->redirectToRoute('profil_show', ["id" => $participant->getId()]);
     }
-
         return $this->render('profil/amendProfil.html.twig', ["profilForm" => $profilForm->createView(), "img" =>$participant->getImgProfil()]);
     }
 

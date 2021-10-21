@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block body %}
-
+    <div class="jumbotron mt-2">
+        <h1 class="text-center display-4 lead">Liste des Sorties</h1>
+    </div>
     <section class="date-user">
         <div class="text-right font-weight-bold">
             Date du jour : {{ "now" | date('d/m/Y') }}
@@ -79,9 +81,9 @@
 
     <section>
         <div class="liste-container">
-            <table class="table table-striped table-liste-sorties">
-                <thead>
-                    <tr>
+            <table class="table table-sm table-striped table-bordered table-hover">
+                <thead class="table-dark text-center">
+                    <tr class="text-center">
                         <th scope="col">Nom de la sortie</th>
                         <th scope="col">Date de la sortie</th>
                         <th scope="col">Clôture</th>
@@ -94,7 +96,7 @@
                 </thead>
                 <tbody>
                 {% for sortie in sorties %}
-                    <tr>
+                    <tr class="text-center">
                         <th scope="row">{{ sortie.nom }}</th>
                         <td>
 
@@ -154,11 +156,9 @@
                 </tbody>
             </table>
         </div>
-        <div class="btn btn-success p-3 border border-dark btn-create-sortie">
             <a href="{{ path('sortie_sortie_add') }}" title="Aller vers la page de création de sortie">
-                Créer une sortie
+                <button class="btn btn-outline-primary btn-lg">Créer une sortie</button>
             </a>
-        </div>
     </section>
 
 

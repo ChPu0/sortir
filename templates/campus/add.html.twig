@@ -7,9 +7,10 @@
         <h1 class="text-center display-4 lead">{{ page_name }}</h1>
         {{ form_start(form) }}
 
-        {{ form_errors(form) }}
-
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary btn-lg btn-block w-100">Ajouter campus</button>
         {{ form_end(form) }}
+        <a href="{{ path('campus') }}"><input type="button" class="btn btn-dark btn-lg btn-block w-100" value="Annuler"/></a>
 
     </div>
 {% endblock %}

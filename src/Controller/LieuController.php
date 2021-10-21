@@ -87,12 +87,6 @@ class LieuController extends AbstractController
     {
         $form = $this->createForm(LieuType::class, $lieu);
         $form->remove('send');
-        $form->add('send',SubmitType::class, [
-            'label' => 'Modifier',
-            'attr' => [
-                'class' => 'btn btn-outline-primary'
-            ]
-        ]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
