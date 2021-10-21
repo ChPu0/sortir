@@ -56,7 +56,7 @@ class SortieController extends AbstractController
 
             $em->persist($lieu);
             $em->flush();
-            $this->addFlash('success', 'Le lieu a été ajouté !');
+            $this->addFlash('succes', 'Le lieu a été ajouté !');
 
         }
 
@@ -93,7 +93,7 @@ class SortieController extends AbstractController
 
             $em->persist($sortie);
             $em->flush();
-            $this->addFlash('success', 'La sortie a été ajoutée !');
+            $this->addFlash('succes', 'La sortie a été ajoutée !');
             return $this->redirectToRoute('sortie_liste');
         }
 
@@ -145,7 +145,7 @@ class SortieController extends AbstractController
 
             $em->persist($sortie);
             $em->flush();
-            $this->addFlash('success', 'La sortie a été modifiée !');
+            $this->addFlash('succes', 'La sortie a été modifiée !');
 
             $this->sortiesListe = $em->getRepository(Sortie::class)->findAll();
 
@@ -194,7 +194,7 @@ class SortieController extends AbstractController
 
 
         $em->flush();
-        $this->addFlash('success', 'L\'inscription a été faite !');
+        $this->addFlash('succes', 'L\'inscription a été faite !');
         return $this->redirectToRoute('main_home');
     }
 
@@ -209,7 +209,7 @@ class SortieController extends AbstractController
         $inscription = $em->getRepository(Inscriptions::class)->findBy(['sortie'=>$sortie->getId(), 'participant'=>$participant->getId()],['sortie'=>'ASC']);
         $em->remove($inscription[0]);
         $em->flush();
-        $this->addFlash('success', 'L\'inscription a été retirée !');
+        $this->addFlash('succes', 'L\'inscription a été retirée !');
         return $this->redirectToRoute('sortie_add_participant');
     }
 
@@ -228,7 +228,7 @@ class SortieController extends AbstractController
             $sortie->setInfosSortie($form['infosSortie']->getData());
             $sortie=$form->setEtat();
             $em->flush();
-            $this->addFlash('success', 'La sortie a été annulée !');
+            $this->addFlash('succes', 'La sortie a été annulée !');
 
             $this->sortiesListe = $em->getRepository(Sortie::class)->findAll();
 

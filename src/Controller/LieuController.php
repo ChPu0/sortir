@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Lieu;
+use App\Form\LieuSearchType;
 use App\Form\LieuType;
 use App\Repository\LieuRepository;
 use App\Services\CallAPI;
@@ -40,10 +41,24 @@ class LieuController extends AbstractController
     /**
      * @Route("/lieu/afficher", name="lieu_affichage")
      */
-    public function affichage(LieuRepository $lieuRepository): Response
+    public function affichage(LieuRepository $lieuRepository, EntityManagerInterface $em, Request $request): Response
     {
-        $lieux = $lieuRepository->findAll();
-        return $this->render('lieu/affichage.html.twig', ["lieux"=>$lieux]);
+        $searchForm = $this->createForm(LieuSearchType::class);
+
+        if($searchForm->handleRequest($request)->isSubmitted() && $searchForm->isValid()) {
+            $critere = $searchForm['nom']->getData();
+            $resultat = $lieuRepository->findByName($critere);
+
+        }
+        else {
+            $resultat = $em->getRepository(Lieu::class)->findAll();
+        }
+
+        return $this->render('lieu/affichage.html.twig', [
+            'page_name' => 'Lieux',
+            'lieux' => $resultat,
+            'searchForm' => $searchForm->createView()
+        ]);
     }
 
     /**
@@ -72,12 +87,6 @@ class LieuController extends AbstractController
     {
         $form = $this->createForm(LieuType::class, $lieu);
         $form->remove('send');
-        $form->add('send',SubmitType::class, [
-            'label' => 'Modifier',
-            'attr' => [
-                'class' => 'btn btn-outline-primary'
-            ]
-        ]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){

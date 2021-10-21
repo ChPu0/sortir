@@ -5,9 +5,9 @@
     {{ form_start(lieuForm) }}
     {{ form_label(lieuForm) }}
     {{ form_widget(lieuForm) }}
-    <button class="btn btn-primary">Valider</button>
+    <button class="btn btn-primary btn-block w-100">Valider</button>
     {{ form_end(lieuForm) }}
-    <a href="{{ path('lieu_affichage') }}"><button class="btn btn-light">Annuler</button></a>
+    <a href="{{ path('lieu_affichage') }}"><button class="btn btn-dark btn-block w-100">Annuler</button></a>
 {% endblock %}
 
 {% block title %}

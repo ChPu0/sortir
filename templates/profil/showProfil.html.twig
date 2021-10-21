@@ -1,14 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>{{ participant.pseudo }}</h1>
-    <img src="{{ asset('img/'~participant.imgProfil) }}" alt="{{ participant.imgProfil }}">
-    <div>Prenom : {{ participant.prenom }}</div>
-    <div>Nom : {{ participant.nom }}</div>
-    <div>Téléphone : {{ participant.telephone }}</div>
-    <div>Email : {{ participant.email }}</div>
-    <div>Campus : {{ participant.campus.nom }}</div>
-    <a href="{{ path('sortie_liste') }}"><button class="btn btn-light">Retour</button></a>
+    <div class="jumbotron mt-2">
+        <h1 class="text-center display-4 lead">{{ participant.pseudo | upper }}</h1>
+    </div>
+    <img src="{{ asset('img/'~participant.imgProfil) }}" alt="{{ participant.imgProfil }}" class="mx-auto d-block">
+    <div class="text-center">Prenom : {{ participant.prenom }}</div>
+    <div class="text-center">Nom : {{ participant.nom }}</div>
+    <div class="text-center">Téléphone : {{ participant.telephone }}</div>
+    <div class="text-center">Email : {{ participant.email }}</div>
+    <div class="text-center">Campus : {{ participant.campus.nom }}</div>
+    <a href="{{ path('sortie_liste') }}"><button class="btn btn-lg btn-dark btn-block w-100">Retour</button></a>
+
 {% endblock %}
 
 {% block title %}

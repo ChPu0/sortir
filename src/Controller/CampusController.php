@@ -56,12 +56,7 @@ class CampusController extends AbstractController
     {
         $form = $this->createForm(campusType::class, $campus);
         $form->remove('submit');
-        $form->add('submit',SubmitType::class, [
-            'label' => 'Modifier',
-            'attr' => [
-                'class' => 'btn btn-outline-primary'
-            ]
-        ]);
+
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){

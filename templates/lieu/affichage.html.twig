@@ -5,27 +5,40 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Modifier les lieux</h1>
+    <div class="jumbotron mt-2">
+        <h1 class="text-center display-4 lead"> Gérer les Lieux</h1>
+    </div>
+    <div class="bordure">
+        {{ form_start(searchForm) }}
+        {{ form_widget(searchForm) }}
+        <button class="btn btn-outline-primary btn-lg">Rechercher</button>
+        {{ form_end(searchForm) }}
+    </div>
     <table class="table table-sm table-striped table-bordered table-hover">
-        <tr class="table-dark">
+        <tr class="table-dark text-center">
             <th>Ville</th>
             <th>Nom du Lieu</th>
             <th>Action</th>
         </tr>
+        {% if lieux is defined and lieux is not empty %}
+            {% for lieu in lieux %}
 
-        {% for lieu in lieux %}
-
-            <tr>
-                <td>{{ lieu.ville.nom | upper }}</td>
-                <td>{{ lieu.nom }}</td>
-                <td><a href="{{ path('lieu_edit', {'id':lieu.id}) }}"><input type="button" value="Modifier" class="btn btn-sm btn-outline-success"></a>
+                <tr class="text-center">
+                    <td>{{ lieu.ville.nom | upper }}</td>
+                    <td>{{ lieu.nom }}</td>
+                    <td><a href="{{ path('lieu_edit', {'id':lieu.id}) }}"><input type="button" value="Modifier" class="btn btn-sm btn-outline-success"></a>
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('lieu_supprimer',{'id':lieu.id}) }}"><input type="button" value="Supprimer" class="btn btn-sm btn-outline-danger"></a>
-                    {% endif %}
-                </td>
+                    {% endif %}                    
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr class="text-center">
+                <th class="text-center text-muted" scope="row" colspan="4">Aucune lieu disponible.</th>
             </tr>
-        {% endfor %}
+        {% endif %}
     </table>
-    <a href="{{ path('lieu_ajout') }}"><input type="button" value="Ajouter un lieu" class="btn btn-sm btn-outline-primary"></a>
+    <a href="{{ path('lieu_ajout') }}"><input type="button" value="Ajouter un lieu" class="btn btn-outline-primary btn-lg"></a>
 {% endblock %}
 
