@@ -76,6 +76,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="participants")
+     * @ORM\JoinColumn(name="campus_id", referencedColumnName="id", nullable=false)
      */
     private $campus;
 
@@ -276,7 +277,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->campus;
     }
 
-    public function setCampus(?Campus $campus): self
+    public function setCampus(Campus $campus): self
     {
         $this->campus = $campus;
 

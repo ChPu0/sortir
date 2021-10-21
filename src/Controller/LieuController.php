@@ -47,7 +47,7 @@ class LieuController extends AbstractController
     }
 
     /**
-     * @Route("/lieu/supprimer/{id}", name="lieu_supprimer")
+     * @Route("/lieu/supprimer/admin/{id}", name="lieu_supprimer")
      */
     public function supprimer(
         EntityManagerInterface $entityManager,
