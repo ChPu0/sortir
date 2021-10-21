@@ -63,6 +63,7 @@ table.table-liste-sorties {
     /*margin: 20vh auto 2vh auto;*/
     overflow: scroll;
     max-height: 95vh;
+    border-radius: 5px;
 }
 
 div.btn-create-sortie {
