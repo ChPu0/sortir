@@ -69,7 +69,7 @@ class VillesController extends AbstractController
     }
 
     /**
-     * @Route("/ville/{id}", name="edit_ville")
+     * @Route("/ville/admin/{id}", name="edit_ville")
      */
     public function edit(Ville $ville, Request $request, EntityManagerInterface $em)
     {
@@ -103,7 +103,7 @@ class VillesController extends AbstractController
     }
 
     /**
-     * @Route("/ville/delete/{id}", name="delete_ville" , requirements={"id"="\d+"})
+     * @Route("/ville/delete/admin/{id}", name="delete_ville" , requirements={"id"="\d+"})
      */
     public function delete(Ville $ville, Request $request, EntityManagerInterface $em)
     {
