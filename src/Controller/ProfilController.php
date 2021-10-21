@@ -51,7 +51,7 @@ class ProfilController extends AbstractController
     //-----------------------------------------
 
     /**
-     * @Route("/admin/profil/create", name="profil_create")
+     * @Route("/profil/create/admin", name="profil_create")
      */
     public function create(
         EntityManagerInterface $entityManager,
@@ -193,7 +193,7 @@ class ProfilController extends AbstractController
     }
 
     /**
-     * @Route("/profil/desactiver/{id}", name="profil_desactiver")
+     * @Route("/profil/desactiver/admin/{id}", name="profil_desactiver")
      */
     public function desactiver(
         EntityManagerInterface $entityManager,
@@ -213,7 +213,7 @@ class ProfilController extends AbstractController
     }
 
     /**
-     * @Route("/profil/reactiver/{id}", name="profil_reactiver")
+     * @Route("/profil/reactiver/admin/{id}", name="profil_reactiver")
      */
     public function reactiver(
         EntityManagerInterface $entityManager,
@@ -238,7 +238,7 @@ class ProfilController extends AbstractController
     //-----------------------------------------------------------
 
     /**
-     * @Route("/profil/supprimer/{id}", name="profil_supprimer")
+     * @Route("/profil/supprimer/admin/{id}", name="profil_supprimer")
      */
     public function supprimer(
         EntityManagerInterface $entityManager,
@@ -293,7 +293,7 @@ class ProfilController extends AbstractController
     }
 
     /**
-     * @Route("/profil/add/csv", name="profil_csv")
+     * @Route("/profil/add/csv/admin", name="profil_csv")
      * @throws Exception
      */
     public function ajouterParticipantCSV(Request $request,
