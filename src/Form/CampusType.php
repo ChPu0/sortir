@@ -15,12 +15,6 @@ class CampusType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, ['label'=>'Nom du campus: '])
-            ->add('submit',SubmitType::class, [
-                'label' => 'Ajouter',
-                'attr' => [
-                    'class' => 'btn btn-outline-primary'
-                ]
-            ])
         ;
     }
 

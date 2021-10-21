@@ -8,9 +8,9 @@
     <img class="miniature" src="{{ asset('img/'~img ) }}">
     {% endif %}
     <br/>
-    <button class="btn btn-outline-primary">Valider</button>
+    <button class="btn btn-primary btn-lg btn-block w-100">Valider</button>
     {{ form_end(profilForm) }}
-    <a href="{{ path('sortie_liste') }}"><button class="btn btn-outline-dark">Annuler</button></a>
+    <a href="{{ path('profil_affichage') }}"><button class="btn btn-dark btn-lg btn-block w-100">Annuler</button></a>
 
 {% endblock %}
 

@@ -56,28 +56,13 @@ class SortieController extends AbstractController
 
             $em->persist($lieu);
             $em->flush();
-            $this->addFlash('success', 'Le lieu a été ajouté !');
+            $this->addFlash('succes', 'Le lieu a été ajouté !');
 
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $sortie = $form->getData();
 
-
-/**
-            $datedebut = $form['dateHeureDebut']->getData();
-            $sortie->setDateHeureDebut(\DateTime::createFromFormat('Y/m/d H:i', $datedebut));
-
-            $datecloture = $form['datecloture']->getData();
-            $sortie->setDatecloture(\DateTime::createFromFormat('Y/m/d', $datecloture));
-
-
-
-                $sortie->setEtatSortie("En création");
-            }elseif( $form->get('publish')->isSubmitted()){
-                $sortie->setEtatSortie("Ouvert");
-
-*/
             if( $form->get('save')->isClicked()){
                 $etat = $etatRepository->findOneBy(['libelle'=>'Créée']);
                 $sortie->setEtat($etat);
@@ -86,14 +71,14 @@ class SortieController extends AbstractController
                 $sortie->setEtat($etat);
 
             }else{
-                return $this->redirectToRoute('main_home');
+                return $this->redirectToRoute('sortie_liste');
             }
 
             $sortie->setOrganisateur($this->getUser());
 
             $em->persist($sortie);
             $em->flush();
-            $this->addFlash('success', 'La sortie a été ajoutée !');
+            $this->addFlash('succes', 'La sortie a été ajoutée !');
             return $this->redirectToRoute('sortie_liste');
         }
 
@@ -118,10 +103,6 @@ class SortieController extends AbstractController
 
         $sortie = $sortieRepository->find($sortie->getId());
         $lieu = $lieuRepository->find($sortie->getLieu()->getId());
-        /*$sortie = new Sortie();
-        $lieu = new Lieu();
-        $formLieu = $this->createForm(LieuType::class, $lieu);
-        $formLieu->handleRequest();*/
 
         $form = $this->createForm(ModifySortieType::class, $sortie);
         $form->handleRequest($request);
@@ -136,16 +117,18 @@ class SortieController extends AbstractController
             }elseif( $form->get('publish')->isClicked()) {
                 $etat = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
                 $sortie->setEtat($etat);
-            }elseif ($form->get('Annuler')->isClicked()){
+            }elseif ($form->get('Annuler')->isClicked()) {
                 return $this->redirectToRoute('sortie_liste');
-
+            }
+            elseif( $form->get('delete')->isClicked()) {
+                return $this->redirectToRoute('annulation_sortie', ['id'=> $sortie->getId()]);
             }else{
                 return $this->redirectToRoute('sortie_liste');
             }
 
             $em->persist($sortie);
             $em->flush();
-            $this->addFlash('success', 'La sortie a été modifiée !');
+            $this->addFlash('succes', 'La sortie a été modifiée !');
 
             $this->sortiesListe = $em->getRepository(Sortie::class)->findAll();
 
@@ -168,79 +151,16 @@ class SortieController extends AbstractController
 
     {
         $sortieData = $this->sortiesListe = $em->getRepository(Sortie::class)->find($request->get('id'));
-        $participant = $participantRepository->find($id);
+        $participant = $sortieData->getInscrits();
 
         return $this->render('sortie/afficherSortie.html.twig', [
             'page_name' => 'Description Sortie',
             'sortie' => $sortieData,
-            'participant' => $participant
+            'participants' => $participant
 
         ]);
 
     }
-    /**
-     * @Route("/sortie/addParticipant/{id}", name="add_participant_sortie")
-     */
-    public function add_participant(EntityManagerInterface $em, Request $request, Sortie $sortie):Response
-    {
-
-        $participant = $em->getRepository(Participant::class)->find($this->getUser()->getId());
-        $inscription = new Inscriptions();
-        $inscription->setDateInscription(new \DateTime());
-        $inscription->setSortie($sortie);
-        $inscription->setParticipant($participant);
-
-        $em->persist($inscription);
-
-
-        $em->flush();
-        $this->addFlash('success', 'L\'inscription a été faite !');
-        return $this->redirectToRoute('main_home');
-    }
-
-    /**
-     * @Route("/sortie/removeParticipant/{id}", name="remove_participant_sortie")
-     */
-    public function remove_participant(EntityManagerInterface $em, Request $request): Response{
-        $participant = $this->getUser();
-
-        $sortie = $em->getRepository(Sortie::class)->find($request->get('id'));
-
-        $inscription = $em->getRepository(Inscriptions::class)->findBy(['sortie'=>$sortie->getId(), 'participant'=>$participant->getId()],['sortie'=>'ASC']);
-        $em->remove($inscription[0]);
-        $em->flush();
-        $this->addFlash('success', 'L\'inscription a été retirée !');
-        return $this->redirectToRoute('sortie_add_participant');
-    }
-
-    /*/**
-     * @Route("/sortie/annuler/{id}", name="annuler_sortie")
-     */
-    /*public function annuler_sortie(Request $request, EntityManagerInterface $em, Sortie $sortie){
-
-        $participant = $this->getUser();
-
-        $form = $this->createForm(AnnulationType::class, $sortie);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()){
-
-            $sortie->setInfosSortie($form['infosSortie']->getData());
-            $sortie=$form->setEtat();
-            $em->flush();
-            $this->addFlash('success', 'La sortie a été annulée !');
-
-            $this->sortiesListe = $em->getRepository(Sortie::class)->findAll();
-
-            return $this->redirectToRoute('main_home');
-        }
-       return $this->render('sortie/annuler.html.twig', [
-            'page_name' => 'Annuler Sortie',
-            'sortie' => $sortie,
-            'participants' => $participant,
-            'form' => $form->createView()
-        ]);
-    }*/
 
 
     /**
@@ -253,8 +173,49 @@ class SortieController extends AbstractController
                                 Request $request,
                                 EntityManagerInterface $entityManager,
                                 ParticipantRepository $participantRepository,
-                                CampusRepository $campusRepository) : Response
+                                CampusRepository $campusRepository,
+                                EtatRepository $etatRepository) : Response
     {
+
+        $toutesSorties = $sortieRepository->findAll();
+        $aujourdhui = new \DateTime('now');
+        foreach ($toutesSorties as $sortie) {
+            $date = $sortie->getDateHeureDebut();
+
+            // $dateCopie = new \DateTime();
+            $dateCopie = &$date;
+            $duree = $sortie->getDuree();
+
+            if($duree == null) {
+                $duree = 1;
+            }
+
+           $interval = new \DateInterval('PT'.$duree.'M');
+           $finInscription = $sortie->getDateLimiteInscription();
+
+
+            //$diff = date_diff($aujourdhui, $date);
+
+            if($finInscription < $aujourdhui) { //Inscription finie
+                if($date <$aujourdhui) {
+                    $dateFin = $dateCopie->add($interval);
+                    if ($dateFin > $aujourdhui) {
+                        $sortie->setEtat($etatRepository->findOneBy(['id' => 4])); // ENCOURS
+                        $dateCopie->sub($interval);
+                    } else {
+                        $sortie->setEtat($etatRepository->findOneBy(['id' => 5])); //PASSEE
+                        $dateCopie->sub($interval);
+                    }
+                }
+                else{
+                    $sortie->setEtat($etatRepository->findOneBy(['id'=>3])); //CLOTUREE
+                }
+            }
+     //       $interval->invert=1;
+
+
+        }
+        $entityManager->flush();
 
         $user = $participantRepository->find($this->getUser()->getId());
         //$userName = $user->getPrenom() . " " . $user->getNom()[0] . ".";
@@ -330,21 +291,12 @@ class SortieController extends AbstractController
                 'isNotInscrit' => $criteresIsNotInscrit
             ];
 
-            //dd($criteres);
             $sorties = $sortieRepository->findByCriteres($criteres);
-            //dd($sorties);
-
-
-        } else {
 
         }
 
-        //dump($request);
-        dump($sorties);
-
         return $this->render('sortie/listeSorties.html.twig', [
             'sorties' => $sorties,
-            //'sortiesInscrits' => $sortiesInscrits,
             'campus' => $campusDefault,
             'user' => $user,
             'criteres' => $criteres,
@@ -397,11 +349,8 @@ class SortieController extends AbstractController
         }
         else {
             $this->addFlash('error', "Cette activité n'existe pas");
-            return $this->render('error/error.list.html.twig');
+            return $this->render('error/error.html.twig');
         }
-
-        //$this->render('sortie/listeSorties.html.twig');
-
 
     }
 
@@ -445,7 +394,7 @@ class SortieController extends AbstractController
             $participant->addSorty($sortie);
             $entityManager->flush();
 
-            $this->addFlash('success', "Vous êtes inscrits à la sortie " . $sortie->getNom() . "!");
+            $this->addFlash('succes', "Vous êtes inscrits à la sortie " . $sortie->getNom() . "!");
             return $this->redirectToRoute(
                 'sortie_liste'
             );

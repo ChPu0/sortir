@@ -16,7 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class VillesController extends AbstractController
 {
-    private $villesListe = null;
 
     /**
      * @Route("/villes", name="list_villes")

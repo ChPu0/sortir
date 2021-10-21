@@ -9,7 +9,6 @@ use App\Repository\LieuRepository;
 use App\Services\CallAPI;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -87,12 +86,6 @@ class LieuController extends AbstractController
     {
         $form = $this->createForm(LieuType::class, $lieu);
         $form->remove('send');
-        $form->add('send',SubmitType::class, [
-            'label' => 'Modifier',
-            'attr' => [
-                'class' => 'btn btn-outline-primary'
-            ]
-        ]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){

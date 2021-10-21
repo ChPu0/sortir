@@ -1,11 +1,48 @@
 body {
     width: 100vw;
-    padding: 5vw;
+    padding: 0 5vw;
     margin: auto;
+    background-color: rgb(121, 168, 168);
+}
+
+.bandeau-haut {
+    padding-top: 150px;
+    background-image: url("../img/bg.png");
+}
+
+.bandeau-bas {
+    margin-top: 30px;
+    padding-top: 150px;
+    background-image: url("../img/bg.png");
 }
 
 section {
     margin: auto;
+}
+
+.btn-lg {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+table {
+    background-color: #d6d8d9;
+}
+
+h1{
+    background-color: #0a0846;
+    color: #d8f625;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.bordure {
+    background: #d6d8d9;
+    padding: 15px 30px;
+    border-radius: 10px;
+    margin-bottom: 10px;
 }
 
 section.date-user {
@@ -39,4 +76,31 @@ div.btn-create-sortie>a {
     color: black;
     font-weight: bold;
     text-decoration: none;
+}
+
+.flash {
+    margin-top: 50px;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+
+.flash-succes {
+    background-color: #0a930c;
+}
+
+.flash-error {
+    background-color: #ef3d3d;
+}
+
+img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+}
+
+.miniature {
+    width: 150px !important;
+    height: 150px !important;
 }
