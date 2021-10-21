@@ -19,6 +19,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ListSortieType extends AbstractType
 {
 
+    public function getCampus() {
+
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -29,10 +32,12 @@ class ListSortieType extends AbstractType
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'nom',
+                'placeholder' => '-- Choisir --',
                 'query_builder' => function(EntityRepository $repository) {},
                 'attr' => [
                     'id' => "campus",
-                    'class' => 'form-select'
+                    'class' => 'form-select',
+
                 ]
             ])
 

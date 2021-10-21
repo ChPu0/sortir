@@ -256,12 +256,11 @@ class SortieController extends AbstractController
                                 CampusRepository $campusRepository) : Response
     {
 
-        //$sortiesInscrits = $sortieRepository->findByIsInscrit(1);
-
         $user = $participantRepository->find($this->getUser()->getId());
-        $userName = $user->getPrenom() . " " . $user->getNom()[0] . ".";
+        //$userName = $user->getPrenom() . " " . $user->getNom()[0] . ".";
+        $campusDefault = $campusRepository->find($user->getCampus()->getId());
         $criteres = ["campus_id" => $user->getCampus()->getId(),
-                      "nom" => null,
+                      "nom" => '',
                       "date_min" => "1800-01-01",
                       "date_max" => "2999-12-31",
                       "user_id" => $user->getId(),
@@ -331,25 +330,23 @@ class SortieController extends AbstractController
                 'isNotInscrit' => $criteresIsNotInscrit
             ];
 
-            dd($criteres);
+            //dd($criteres);
             $sorties = $sortieRepository->findByCriteres($criteres);
             //dd($sorties);
 
 
         } else {
 
-
         }
 
         //dump($request);
         dump($sorties);
 
-
         return $this->render('sortie/listeSorties.html.twig', [
             'sorties' => $sorties,
             //'sortiesInscrits' => $sortiesInscrits,
+            'campus' => $campusDefault,
             'user' => $user,
-            'userName' => $userName,
             'criteres' => $criteres,
             'listSortieType' => $listSortieType->createView()
         ]);
