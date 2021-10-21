@@ -67,7 +67,8 @@ class ListSortieType extends AbstractType
                 'label' => 'Sorties dont je suis l\'organisateur/trice',
                 'attr' => [
                     'name' => "organisateur",
-                    'class' => "form-check-input"
+                    'class' => "form-check-input",
+                    'checked'   => 'checked'
                 ]
             ])
 
@@ -76,14 +77,16 @@ class ListSortieType extends AbstractType
                 'label' => 'Sorties auxquelles je suis inscrit/e',
                 'attr' => [
                     'name' => "inscrit",
-                    'class' => "form-check-input"
+                    'class' => "form-check-input",
+                    'checked'   => 'checked'
             ]])
              ->add('isNotInscrit', CheckboxType::class,[
                 'required' => false,
                 'label' => 'Sorties auxquelles je ne suis pas inscrit/e',
                 'attr' => [
                     'name' => "non-inscrit",
-                    'class' => "form-check-input"
+                    'class' => "form-check-input",
+                    'checked'   => 'checked'
             ]])
 
 
