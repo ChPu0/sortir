@@ -6,7 +6,6 @@ use App\Entity\Participant;
 use App\Form\ProfilType;
 use App\Repository\CampusRepository;
 use App\Repository\ParticipantRepository;
-use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Csv\Exception;
 use League\Csv\Reader;
@@ -253,10 +252,6 @@ class ProfilController extends AbstractController
         //todo modifier la page de redirection à la validation du formulaire
         return $this->redirectToRoute('profil_affichage', ["id" => $participant->getId()]);
     }
-
-
-
-    //todo a adapter au formulaire d'Anaïs
 
 
     /**

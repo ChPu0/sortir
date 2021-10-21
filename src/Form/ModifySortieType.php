@@ -30,11 +30,13 @@ class ModifySortieType extends AbstractType
             ->add('dateLimiteInscription', DateType::class, [
                 'label' => 'Date limite d\'inscription: ', 'widget' => 'single_text'])
             ->add('nbinscriptionsmax', IntegerType::class, [
-                'label' => 'Nombre d\'inscription maximum: '
+                'label' => 'Nombre d\'inscription maximum: ',
+                'required'=>false
             ])
             ->add('duree', null, ['label' => 'Durée: '])
             ->add('infosSortie', TextareaType::class, [
-                'label' => 'Description et infos: '
+                'label' => 'Description et infos: ',
+                'required'=>false
             ])
             ->add('lieu', EntityType::class, ['placeholder' => 'Choisir le lieu',
                 'class' => Lieu::class,
@@ -49,9 +51,6 @@ class ModifySortieType extends AbstractType
 
                 }
             ])
-            //->add('ville', EntityType::class, ['mapped' => false, 'class' => Ville::class, 'placeholder' => 'Choisir la ville ', 'choice_label' => 'nom'])
-            //->add('rue', EntityType::class, ['class' => Lieu::class, 'mapped' => false, 'label' => 'Rue: ', 'choice_label' => 'rue', 'placeholder' => 'Choisir la rue',])
-            //->add('codePostal', IntegerType::class, ['mapped' => false, 'label' => 'Code postal: '])
             ->add('latitude', IntegerType::class, ['mapped' => false, 'label' => 'Latitude: ', 'required' => false ])
             ->add('longitude', IntegerType::class, ['mapped' => false, 'label' => 'Longiture: ', 'required' => false
             ])
@@ -69,13 +68,13 @@ class ModifySortieType extends AbstractType
                     'class' => 'btn btn-success w-100'
                 ]
             ])
-            ->add('cancel', SubmitType::class, [
-                'label' => 'Annuler',
+            ->add('Annuler', SubmitType::class, [
+                'label' => 'Retour',
                 'attr' => [
-                    'class' => 'btn btn-secondary w-100']
+                    'class' => 'btn btn-dark w-100']
             ])
             ->add('delete', SubmitType::class, [
-                'label' => 'Supprimer la sortie',
+                'label' => 'Annuler la sortie',
                 'attr' => [
                     'class' => 'btn btn-danger w-100']
             ]);

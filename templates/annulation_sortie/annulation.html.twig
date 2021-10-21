@@ -8,9 +8,9 @@
     <div>Lieu : {{ sortie.lieu.nom }}</div>
     {{ form_start(annulationForm) }}
     {{ form_widget(annulationForm) }}
-    <button class="btn btn-primary">Enregistrer</button>
+    <button class="btn btn-primary btn-lg">Enregistrer</button>
     {{ form_end(annulationForm) }}
-    <a href="#"><button class="btn btn-light">Annuler</button></a>
+    <a href="{{ path('sortie_liste') }}"><button class="btn btn-dark btn-lg">Annuler</button></a>
 {% endblock %}
 
 {% block title %}

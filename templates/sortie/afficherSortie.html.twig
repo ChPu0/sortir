@@ -79,7 +79,7 @@
         <hr>
 
         <div class="text-center">
-            <h1 class="lead display-4">Liste des partitipants inscrits:</h1>
+            <h1 class="lead display-4">Liste des participants inscrits</h1>
         </div>
 
         <div class="row">
@@ -91,17 +91,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% if participant is not empty %}
-                    {% for participants in participant %}
+                {% if participants is not empty %}
+                    {% for participant in participants %}
                         <tr class="text-center">
-                            <td scope="row">{{ participant.participant.pseudo }}</td>
-                            <td scope="row"> {{ participant.participant.prenom }} {{ participant.participant.nom }}</td>
+                            <td scope="row">{{ participant.pseudo }}</td>
+                            <td scope="row"> {{ participant.prenom }} {{ participant.nom }}</td>
                         </tr>
                     {% endfor %}
                 {% endif %}
 
                 </tbody>
             </table>
+
+            <a href="{{ path('sortie_liste') }}"><button class="btn btn-dark btn-block w-100">Annuler</button></a>
+
         </div>
     </div>
 {% endblock %}

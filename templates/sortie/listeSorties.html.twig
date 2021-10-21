@@ -125,7 +125,7 @@
                                     {% if(sortie.getInscrits.contains(app.user)) %}
                                         <a href="{{ path('sortie_desinscription', {'id': sortie.id}) }}">Se désister</a>
                                     {% else %}
-                                        <a href="{{ path('sortie_add_participant', {'id': sortie.id}) }}">S'inscrire</a>
+                                        <a href="{{ path('sortie_sortie_add_participant', {'id': sortie.id}) }}">S'inscrire</a>
                                     {% endif %}
                                 {% endif %}
                             {# Sortie : non-organisateur : #}
@@ -157,7 +157,7 @@
             </table>
         </div>
             <a href="{{ path('sortie_sortie_add') }}" title="Aller vers la page de création de sortie">
-                <button class="btn btn-outline-primary btn-lg">Créer une sortie</button>
+                <button class="btn btn-outline-primary btn-lg" >Créer une sortie</button>
             </a>
     </section>
 
