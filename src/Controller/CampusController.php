@@ -15,7 +15,7 @@ class CampusController extends AbstractController
     private $campusListe = null;
 
     /**
-     * @Route("/campus", name="campus")
+     * @Route("/campus/admin", name="campus")
      */
     public function list(Request $request, EntityManagerInterface $em)
     {
@@ -28,7 +28,7 @@ class CampusController extends AbstractController
     }
 
     /**
-     * @Route("/campus/add" , name="add_campus")
+     * @Route("/campus/add/admin" , name="add_campus")
      */
     public function add(Request $request, EntityManagerInterface $em){
         $campus = new Campus();
@@ -50,7 +50,7 @@ class CampusController extends AbstractController
     }
 
     /**
-     * @Route("/campus/{id}", name="edit_campus")
+     * @Route("/campus/admin/{id}", name="edit_campus")
      */
     public function edit(campus $campus, Request $request, EntityManagerInterface $em)
     {
@@ -84,7 +84,7 @@ class CampusController extends AbstractController
     }
 
     /**
-     * @Route("/campus/delete/{id}", name="delete_campus" , requirements={"id"="\d+"})
+     * @Route("/campus/delete/admin/{id}", name="delete_campus" , requirements={"id"="\d+"})
      */
     public function delete(campus $campus, Request $request, EntityManagerInterface $em)
     {

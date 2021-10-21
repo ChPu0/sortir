@@ -19,7 +19,9 @@
                 <td>{{ lieu.ville.nom | upper }}</td>
                 <td>{{ lieu.nom }}</td>
                 <td><a href="{{ path('lieu_edit', {'id':lieu.id}) }}"><input type="button" value="Modifier" class="btn btn-sm btn-outline-success"></a>
-                    <a href="{{ path('lieu_supprimer',{'id':lieu.id}) }}"><input type="button" value="Supprimer" class="btn btn-sm btn-outline-danger"></a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('lieu_supprimer',{'id':lieu.id}) }}"><input type="button" value="Supprimer" class="btn btn-sm btn-outline-danger"></a>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}

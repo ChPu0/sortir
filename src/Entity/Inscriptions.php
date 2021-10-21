@@ -23,13 +23,13 @@ class Inscriptions
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Sorties", inversedBy="inscriptions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Sortie", inversedBy="inscriptions")
      * @ORM\JoinColumn(name="sortie_id", referencedColumnName="id", nullable=false)
      */
     private $sortie;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Participants", inversedBy="inscriptions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Participant", inversedBy="inscriptions")
      * @ORM\JoinColumn(name="participant_id", referencedColumnName="id", nullable=false)
      */
     private $participant;
