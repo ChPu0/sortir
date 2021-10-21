@@ -130,7 +130,6 @@ class ProfilController extends AbstractController
     }
 
 
-
     //------------------------------------------
     //Formulaire de modif d'un profil User
     //------------------------------------------

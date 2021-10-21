@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Ville;
 
+use App\Form\SearchType;
 use App\Form\VillesType;
+use App\Form\VilleSearchType;
+use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -18,15 +21,30 @@ class VillesController extends AbstractController
     /**
      * @Route("/villes", name="list_villes")
      */
-    public function list(Request $request, EntityManagerInterface $em)
+    public function list(Request $request, EntityManagerInterface $em, VilleRepository $villeRepository)
     {
-        $this->villesListe = $em->getRepository(Ville::class)->findAll();
 
-        return $this->render('villes/list.html.twig', [
+
+        $searchForm = $this->createForm(VilleSearchType::class);
+
+        if($searchForm->handleRequest($request)->isSubmitted() && $searchForm->isValid()) {
+            $critere = $searchForm['nom']->getData();
+
+            $resultat = $villeRepository->findByName($critere);
+
+
+        }
+        else {
+            $resultat = $em->getRepository(Ville::class)->findAll();
+        }
+
+            return $this->render('villes/list.html.twig', [
             'page_name' => 'Villes',
-            'villes' => $this-> villesListe
+            'villes' => $resultat,
+            'searchForm' => $searchForm->createView()
         ]);
     }
+
 
     /**
      * @Route("/ville/add" , name="add_ville")
