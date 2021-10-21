@@ -117,12 +117,13 @@ class SortieRepository extends ServiceEntityRepository
         $campusRepository = $em->getRepository(Campus::class);
         $etatRepository = $em->getRepository(Etat::class);
         $participantRepository = $em->getRepository(Participant::class);
+        $sortieRepository = $em->getRepository(Sortie::class);
 
         $count = 1;
         $criteres['nom'] = str_replace("'", "", $criteres['nom']) ;
 
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->innerJoin('s.inscrits', 'sp');
+        $queryBuilder->leftJoin('s.inscrits', 'sp');
         if(!$criteres['isInscrit'] || !$criteres['isNotInscrit']) {
             if ($criteres['isInscrit']) {
                 $queryBuilder->
@@ -137,7 +138,7 @@ class SortieRepository extends ServiceEntityRepository
         if(!$criteres['organisateur']) {
                 $queryBuilder->
                     andWhere('s.organisateur != ?2');
-        } else if(!$criteres['isInscrit'] && !$criteres['isNotInscrit']) {
+        } else if($criteres['organisateur'] && !$criteres['isInscrit'] && !$criteres['isNotInscrit']) {
             $queryBuilder->andWhere('s.organisateur = ?2');
         }
 
