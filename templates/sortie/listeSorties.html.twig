@@ -115,7 +115,7 @@
                                 <p class="text-center">X</p>
                         {% endif %}</td>
 
-                        <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
+                        <td><a href="{{ path('profil_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</a></td>
                         <td>
                             {# Sortie : user organisateur : #}
                             {% if (sortie.organisateur.id != app.user.id) %}
