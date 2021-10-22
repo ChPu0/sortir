@@ -4,7 +4,25 @@
     <h1>Profil</h1>
 <div class="form-group">
     {{ form_start(profilForm) }}
-    {{ form_widget(profilForm) }}
+    {{ form_row(profilForm.pseudo) }}
+    {{ form_row(profilForm.prenom) }}
+    {{ form_row(profilForm.nom) }}
+    {{ form_row(profilForm.telephone) }}
+    {{ form_row(profilForm.email) }}
+    {{ form_row(profilForm.password) }}
+    {% if is_granted('ROLE_USER') %}
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ form_row(profilForm.administrateur) }}
+        {% else %}
+            <div style="display: none">
+                {{ form_row(profilForm.administrateur) }}
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {{ form_row(profilForm.actif) }}
+    {{ form_row(profilForm.campus) }}
+    {{ form_row(profilForm.image) }}
     {% if img|default(null) %}
     <img class="miniature mx-auto d-block" src="{{ asset('img/'~img ) }}">
     {% endif %}
