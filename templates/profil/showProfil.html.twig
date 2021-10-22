@@ -10,7 +10,9 @@
     <div class="text-center">Téléphone : {{ participant.telephone }}</div>
     <div class="text-center">Email : {{ participant.email }}</div>
     <div class="text-center">Campus : {{ participant.campus.nom }}</div>
+    {% if(participant.id == app.user.id) %}
     <a href="{{ path('profil_amend', {'id': app.user.id}) }}"><button class="btn btn-lg btn-primary btn-block w-100">Modifier</button></a>
+    {% endif %}
     <a href="{{ path('sortie_liste') }}"><button class="btn btn-lg btn-dark btn-block w-100">Retour</button></a>
 
 {% endblock %}
