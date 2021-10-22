@@ -1,0 +1,28 @@
+{# templates/bundles/TwigBundle/Exception/error404.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} Error 401{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('style/error.css') }}">
+    <link href='https://fonts.googleapis.com/css?family=Anton|Passion+One|PT+Sans+Caption' rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block body %}
+    <!-- Error Page -->
+    <div class="error">
+        <div class="container-floud">
+            <div class="col-xs-12 ground-color text-center">
+                <div class="container-error-404">
+                    <div class="clip"><div class="shadow"><span class="digit thirdDigit">4</span></div></div>
+                    <div class="clip"><div class="shadow"><span class="digit secondDigit">0</span></div></div>
+                    <div class="clip"><div class="shadow"><span class="digit firstDigit">1</span></div></div>
+                    <div class="msg">OH!<span class="triangle"></span></div>
+                </div>
+                <h2 class="h1">Une autorisation est requise</h2>
+                <a href="{{ path('sortie_liste') }}"></a><button type="button" class="btn btn-warning">Contactez un adminstrateur!</button>
+        </div>
+
+    </div>
+{% endblock %}
